@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Search</title>
+</head>
+<body>
+<form method="GET" action="/event-results">
+    <div class="form-group">
+        <label for="search-term">Search Term</label>
+        <input id="search-term" type="text" name="query">
+    </div>
+
+    <div class="form-group">
+        <label for="event-loc">Location*</label>
+        <input id="event-loc" type="text" name="location" required>
+    </div>
+
+    <div class="form-group">
+        <label for="loc-within">Distance*</label>
+        <input id="loc-within" type="number" name="distance" required>
+        <select name="measurement">
+            <option value="mi">miles</option>
+            <option value="km">kilometers</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="sort-by" name="sort">Sort by</label>
+        <select id="sort-by" name="sort">
+            <option value="date">Date</option>
+            <option value="distance">Distance</option>
+            <option value="best">Best</option>
+        </select>
+    </div>
+    <input type="submit" value="Look for events!">
+</form>
+</body>
+</html>

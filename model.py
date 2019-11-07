@@ -13,14 +13,27 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    username = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
-    fname = db.Column(db.String(20))
-    lname = db.Column(db.String(30))
-    email = db.Column(db.String(30))
-    phone = db.Column(db.String(11))
-    location = db.Column(db.String(50))
+    user_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True,
+                        )
+    username = db.Column(db.String(20),
+                        nullable=False,
+                        unique=True,
+                        )
+    password = db.Column(db.String(20),
+                        nullable=False,
+                        )
+    fname = db.Column(db.String(20),)
+    lname = db.Column(db.String(30),)
+    email = db.Column(db.String(30), nullable=False, unique=True,)
+    phone = db.Column(db.String(15),)
+    location = db.Column(db.String(50),)
+    avatar = db.Column(db.String(100),)
+
+    def __repr__(self):
+        """Provide helpful representation when printed!"""
+        return f"<User {self.user_id} {self.username}>"
 
 
 class Event(db.Model):
@@ -28,7 +41,18 @@ class Event(db.Model):
 
     __tablename__ = "events"
 
-    pass
+    event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    event_name = db.Column(db.String)
+    event_URL = db.Column(db.String)
+    location = db.Column(db.String)
+    date = db.Column(db.DateTime) #start time and end time should be in datetime object
+    category = db.Column(db.String)
+    price = db.Column(db.String)
+    description = db.Column(db.String)
+
+    def __repr__(self):
+        """Provide helpful representation when printed!"""
+        return f"< {self.event_name} >"
 
 
 class UserEvent(db.Model):
@@ -36,7 +60,13 @@ class UserEvent(db.Model):
 
     __tablename__ = "user_events"
 
-    pass
+    ue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    attendance = db.Column(db.String(5))
+
+    user = db.relationship("User", backref=db.backref("user_events"))
+    event = db.relationship("Event", backref=db.backref("user_events"))
 
 
 class Interest(db.Model):
@@ -44,12 +74,52 @@ class Interest(db.Model):
 
     __tablename__ = "user_interests"
 
-    pass
+    record_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    music = db.Column(db.Boolean)
+    business = db.Column(db.Boolean)
+    food = db.Column(db.Boolean)
+    community = db.Column(db.Boolean)
+    arts = db.Column(db.Boolean)
+    film_media = db.Column(db.Boolean)
+    sports_fitness = db.Column(db.Boolean)
+    health = db.Column(db.Boolean)
+    science_tech = db.Column(db.Boolean)
+    travel_outdoor = db.Column(db.Boolean)
+    charity_causes = db.Column(db.Boolean)
+    spirituality = db.Column(db.Boolean)
+    family_education = db.Column(db.Boolean)
+    holiday = db.Column(db.Boolean)
+    government = db.Column(db.Boolean)
+    fashion = db.Column(db.Boolean)
+    home_lifestyle = db.Column(db.Boolean)
+    auto_boat_air = db.Column(db.Boolean)
+    hobbies = db.Column(db.Boolean)
+    school_activities = db.Column(db.Boolean)
+    other = db.Column(db.Boolean)
 
-class Activity(db.Model):
+# class Activity(db.Model):
 
-    __tablename__ = "activity_suggestions"
+#     __tablename__ = "activity_suggestions"
 
-    pass
+#     pass
 
+###############################################################################
+# Helper Functions
+
+def connect_to_db(app):
+    """Connect the database to our Flask app."""
+
+    # Configure to use our PostgreSQL database
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bored_data'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
+
+if __name__ == "__main__":
+
+    from server import app
+    connect_to_db(app)
+    db.create_all()
+    print("Connected to DB.")
 
