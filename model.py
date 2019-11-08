@@ -22,7 +22,7 @@ class User(db.Model):
                         nullable=False,
                         unique=True,
                         )
-    password = db.Column(db.String(20),
+    password_hash = db.Column(db.String(128),
                         nullable=False,
                         )
     fname = db.Column(db.String(20),)
@@ -31,6 +31,12 @@ class User(db.Model):
     phone = db.Column(db.String(15),)
     location = db.Column(db.String(50),)
     avatar = db.Column(db.String(100),)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         """Provide helpful representation when printed!"""

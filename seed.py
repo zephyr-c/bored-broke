@@ -23,13 +23,14 @@ def load_users():
 
         user = User(user_id=user_id,
                     username=username,
-                    password=password,
+                    # password=password,
                     fname=fname,
                     lname=lname,
                     email=email,
                     phone=phone,
                     location=location,
                     avatar=avatar)
+        user.set_password(password)
         # Add user to session or they won't be stored
         db.session.add(user)
     # Commit to DB or user won't end up there ever
