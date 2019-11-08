@@ -30,30 +30,46 @@ def process_login():
     add user id to Flask session if username exists and passwords match"""
 
     # gets form data from HTML form pointed at this route
-    login_attempt = request.form
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    profile = User.query.filter(User.username == username).first()
+
+    if not profile or not profile.check_password(password):
+        flash("Username or Password Incorrect")
+        return redirect("/")
+    else:
+        session['user_id'] = profile.user_id
+        flash(f"Welcome back {profile.fname}!")
+        return redirect("/event-search")
+
+
+
+
+
 
     # check for username in database
-    user_exists = User.query.filter(User.username == login_attempt['username']).first()
+    # user_exists = User.query.filter(User.username == login_attempt['username']).first()
     # FOR LATER: export login loops to external helper function file?
 
     # if username found in database, set password to variable for further use
-    if user_exists:
-        password = user_exists.password
-    else: # user does not exist, redirect to log in
-        flash("Login Information Incorrect") # vague for security lol
-        return redirect("/")
+    # if user_exists:
+        # password = user_exists.password
+    # else:  # user does not exist, redirect to log in
+        # flash("Login Information Incorrect") # vague for security lol
+        # return redirect("/")
 
     # check if password from database matches password from login form
-    if password != login_attempt['password']: # password incorrecrt
-        flash("Login Information Incorrect")
-        return redirect("/") # redirect to log in page
+    # if password != login_attempt['password']: # password incorrecrt
+        # flash("Login Information Incorrect")
+        # return redirect("/") # redirect to log in page
     # if password is match
-    else:
-        session['user_id'] = user_exists.user_id # add user id to session data
+    # else:
+        # session['user_id'] = user_exists.user_id # add user id to session data
         # potentiall add different user data? Whole user object? Come back to this.
 
-        flash(f"Welcome Back {user_exists.fname}!") # Welcome/Success message
-        return redirect("/event-search") # Redirect to event search
+        # flash(f"Welcome Back {user_exists.fname}!") # Welcome/Success message
+        # return redirect("/event-search") # Redirect to event search
 
 @app.route("/logout")
 def process_logout():
@@ -84,13 +100,14 @@ def process_registration():
         return redirect('/register')
     else:
         new_user = User(username=new_info['username'],
-                        password=new_info['password'],
+                        # password=new_info['password'],
                         fname=new_info['fname'],
                         lname=new_info['lname'],
                         email=new_info['email'],
                         phone=new_info['phone'],
                         location=new_info['location'],
                         )
+        new_user.set_password(new_info['password'])
         db.session.add(new_user)
         db.session.commit()
         session['user_id'] = new_user.user_id
