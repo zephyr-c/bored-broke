@@ -26,8 +26,7 @@ def homepage():
 @app.route("/login", methods=["POST"])
 def process_login():
     """Log user in to their account.
-    Query for username address in database, check for password match, and
-    add user id to Flask session if username exists and passwords match"""
+    Checks for username in db and checks password correct"""
 
     # gets form data from HTML form pointed at this route
     username = request.form.get('username')
@@ -161,9 +160,12 @@ def find_events():
             # if response is an error code there is nothing to turn into json,
             # must check response okay first.
             events = data['events']
+            print("\n"*3)
+            print(pformat(events))
+            print("\n"*3)
 
         else:
-            flash(f"Oops! No Events: {data['error_description']}")
+            flash(f"Oops! No Events: {response}")
             events = []
 
         return render_template("search-results.html",
@@ -172,6 +174,22 @@ def find_events():
     else:
         flash("Please provide all the required information!")
         return redirect("/event-search")
+
+@app.route("/save-event", methods=["POST"])
+def save_event():
+    """Save event to user saved events list
+
+reference user ID from session
+get event data from event results
+query event table to see if event already saved by other user
+if already in DB, use existing entry to create new UserEvent
+else add event to Event table, and then create new UserEvent
+eventually, add to user saved events page/template. """
+    # user = User.query.filter_by(user_id = session['user_id']).first()
+
+
+    pass
+
 
 
 if __name__ == "__main__":
