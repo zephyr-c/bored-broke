@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bored</title>
+  <title>  {% block title %}BORED{% endblock %} </title>
 </head>
 <body>
+    {% for message in get_flashed_messages() %}
+    <ul>
+        <li>{{ message }}</li>
+    </ul>
+    {% endfor %}
+
 
     {% block content %} CONTENT GOES HERE! {% endblock %}
 
 </body>
+
+<footer>
+{% if session.get('user_id') %}
+    <a href="/logout"> Log Out</a>
+{% else %}
+    <a href="/login">Log In</a>
+{% endif %}
+</footer>
 </html>

@@ -3,7 +3,9 @@
 
 <ul>
     {% for event in results %}
-        <li><a href="{{ event.url }}">{{ event.name.text }}</a></li>
+        <li>
+            <a href="{{ event.url }}" target="_blank">{{ event.name.text }}</a>
+        </li>
     {% endfor %}
 </ul>
 

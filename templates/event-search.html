@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Event Search</title>
-</head>
-<body>
+{% extends 'base.html'%}
+
+    {% block title%}Event Search{% endblock %}
+{% block content%}
 <form method="GET" action="/event-results">
     <div class="form-group">
         <label for="search-term">Search Term</label>
@@ -33,6 +31,4 @@
         </select>
     </div>
     <input type="submit" value="Look for events!">
-</form>
-</body>
-</html>
+{% endblock %}

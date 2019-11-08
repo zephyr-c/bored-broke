@@ -1,9 +1,11 @@
 from pprint import pformat
 import os
 
+from jinja2 import StrictUndefined
+
 import requests
 
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Event, UserEvent, Interest, connect_to_db, db
@@ -16,21 +18,85 @@ EVENTBRITE_TOKEN = '6KGWWHMNISTJOXRVMSSL'
 
 EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def homepage():
     """show landing page"""
     return render_template("landingpage.html")
 
+@app.route("/login", methods=["POST"])
+def process_login():
+    """Log user in to their account.
+    Query for username address in database, check for password match, and
+    add user id to Flask session if username exists and passwords match"""
 
-@app.route("/registration")
+    # gets form data from HTML form pointed at this route
+    login_attempt = request.form
+
+    # check for username in database
+    user_exists = User.query.filter(User.username == login_attempt['username']).first()
+    # FOR LATER: export login loops to external helper function file?
+
+    # if username found in database, set password to variable for further use
+    if user_exists:
+        password = user_exists.password
+    else: # user does not exist, redirect to log in
+        flash("Login Information Incorrect") # vague for security lol
+        return redirect("/")
+
+    # check if password from database matches password from login form
+    if password != login_attempt['password']: # password incorrecrt
+        flash("Login Information Incorrect")
+        return redirect("/") # redirect to log in page
+    # if password is match
+    else:
+        session['user_id'] = user_exists.user_id # add user id to session data
+        # potentiall add different user data? Whole user object? Come back to this.
+
+        flash(f"Welcome Back {user_exists.fname}!") # Welcome/Success message
+        return redirect("/event-search") # Redirect to event search
+
+@app.route("/logout")
+def process_logout():
+    """Log user out from account by deleting info from Flask session"""
+
+    # There might be a better way to do this as well. More research needed after
+    # basic functionality achieved.
+    del session['user_id']
+
+    return redirect("/") # can this be changed to let them stay wherever they are?
+
+
+
+
+@app.route("/register", methods=["GET"])
 def registration():
     """show registration form"""
-    pass
+    return render_template('registration.html')
 
-@app.route("/register-user")
+@app.route("/register", methods=['POST'])
 def process_registration():
     """save new user data in system"""
-    pass
+    new_info = request.form
+    users = User.query.all()
+    if (new_info['username'] in [user.username for user in users]
+       or new_info['email'] in [user.email for user in users]):
+        flash("User Already Exists")
+        return redirect('/register')
+    else:
+        new_user = User(username=new_info['username'],
+                        password=new_info['password'],
+                        fname=new_info['fname'],
+                        lname=new_info['lname'],
+                        email=new_info['email'],
+                        phone=new_info['phone'],
+                        location=new_info['location'],
+                        )
+        db.session.add(new_user)
+        db.session.commit()
+        session['user_id'] = new_user.user_id
+        flash("Success!")
+        return redirect('/event-search')
+
 
 
 @app.route("/user-profile")
@@ -38,16 +104,18 @@ def user_profile():
     """show user profile/interests"""
     pass
 
+
 @app.route("/event-search")
 def show_search_form():
     """show event search form"""
     return render_template('event-search.html')
 
+
 @app.route("/event-results")
 def find_events():
     """Search for and display free events from EventBrite"""
 
-# Should API calls be helper functions in a seperate file???
+# Should API calls be helper functions in a separate file???
 
     query = request.args.get('query')
     location = request.args.get('location')
@@ -58,23 +126,23 @@ def find_events():
     if location and distance and measurement:
         distance = distance + measurement
 
-        payload = {'q' : query,
-                    'location.address' : location,
-                    'location.within' : distance,
-                    'sort_by' : sort,
-                    }
+        payload = {'q': query,
+                   'price': 'free',
+                   'location.address': location,
+                   'location.within': distance,
+                   'sort_by': sort,
+                   }
 
         headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
 
         response = requests.get(EVENTBRITE_URL + "events/search/",
                                 params=payload,
                                 headers=headers)
-        data = response.json()
-        print("\n" * 3)
-        print(data)
-        print("\n"*3)
 
         if response.ok:
+            data = response.json()  # This was causing an error outside of this if statement
+            # if response is an error code there is nothing to turn into json,
+            # must check response okay first.
             events = data['events']
 
         else:
@@ -82,8 +150,8 @@ def find_events():
             events = []
 
         return render_template("search-results.html",
-                                data=pformat(data),
-                                results=events)
+                               data=pformat(data),
+                               results=events)
     else:
         flash("Please provide all the required information!")
         return redirect("/event-search")
