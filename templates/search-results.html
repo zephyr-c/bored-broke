@@ -5,6 +5,7 @@
     {% for event in results %}
         <li>
             <a href="{{ event.url }}" target="_blank">{{ event.name.text }}</a>
+            <span><button name="{{ event.id }}">Save Event</button></span>
         </li>
     {% endfor %}
 </ul>
@@ -14,5 +15,4 @@
 <!-- inside loop, access event_id or event_uri, which will uniquely pull just the json for that event.
 use this to get data necessary to save to table.
 look into adding to DB from json? not sure I understand completely but there's probably someting in react cards.
- 
  add some sort of click listener to save elements, send post?-->

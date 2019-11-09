@@ -49,6 +49,7 @@ class Event(db.Model):
     __tablename__ = "events"
 
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    eventbrite_id = db.Column(db.Integer)
     event_name = db.Column(db.String)
     event_URL = db.Column(db.String)
     location = db.Column(db.String)
@@ -69,7 +70,7 @@ class UserEvent(db.Model):
 
     ue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    eventbrite_id = db.Column(db.Integer, db.ForeignKey('events.eventbrite_id'))
     attendance = db.Column(db.String(5))
 
     user = db.relationship("User", backref=db.backref("user_events"))

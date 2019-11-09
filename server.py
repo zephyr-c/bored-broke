@@ -43,33 +43,6 @@ def process_login():
         return redirect("/event-search")
 
 
-
-
-
-
-    # check for username in database
-    # user_exists = User.query.filter(User.username == login_attempt['username']).first()
-    # FOR LATER: export login loops to external helper function file?
-
-    # if username found in database, set password to variable for further use
-    # if user_exists:
-        # password = user_exists.password
-    # else:  # user does not exist, redirect to log in
-        # flash("Login Information Incorrect") # vague for security lol
-        # return redirect("/")
-
-    # check if password from database matches password from login form
-    # if password != login_attempt['password']: # password incorrecrt
-        # flash("Login Information Incorrect")
-        # return redirect("/") # redirect to log in page
-    # if password is match
-    # else:
-        # session['user_id'] = user_exists.user_id # add user id to session data
-        # potentiall add different user data? Whole user object? Come back to this.
-
-        # flash(f"Welcome Back {user_exists.fname}!") # Welcome/Success message
-        # return redirect("/event-search") # Redirect to event search
-
 @app.route("/logout")
 def process_logout():
     """Log user out from account by deleting info from Flask session"""
@@ -81,12 +54,11 @@ def process_logout():
     return redirect("/") # can this be changed to let them stay wherever they are?
 
 
-
-
 @app.route("/register", methods=["GET"])
 def registration():
     """show registration form"""
     return render_template('registration.html')
+
 
 @app.route("/register", methods=['POST'])
 def process_registration():
@@ -139,41 +111,42 @@ def find_events():
     measurement = request.args.get('measurement')
     sort = request.args.get('sort')
 
-    if location and distance and measurement:
-        distance = distance + measurement
+    distance = distance + measurement
 
-        payload = {'q': query,
-                   'price': 'free',
-                   'location.address': location,
-                   'location.within': distance,
-                   'sort_by': sort,
-                   }
+    payload = {'q': query,
+               'price': 'free',
+               'location.address': location,
+               'location.within': distance,
+               'sort_by': sort,
+               }
 
-        headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
 
-        response = requests.get(EVENTBRITE_URL + "events/search/",
-                                params=payload,
-                                headers=headers)
+    headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
 
-        if response.ok:
-            data = response.json()  # This was causing an error outside of this if statement
-            # if response is an error code there is nothing to turn into json,
-            # must check response okay first.
-            events = data['events']
-            print("\n"*3)
-            print(pformat(events))
-            print("\n"*3)
+    response = requests.get(EVENTBRITE_URL + "events/search/",
+                            params=payload,
+                            headers=headers)
 
-        else:
-            flash(f"Oops! No Events: {response}")
-            events = []
+    if response.ok:
+        data = response.json()  # This was causing an error outside of this if statement
+        # if response is an error code there is nothing to turn into json,
+        # must check response okay first.
+        events = data['events']
 
         return render_template("search-results.html",
-                               data=pformat(data),
-                               results=events)
+                                results=events)
+
     else:
-        flash("Please provide all the required information!")
-        return redirect("/event-search")
+        return render_template("eventbrite_goofed.html")
+
+    # else:
+    #     flash(f"Oops! No Events: {response.headers} {response.reason} {response.text}")
+    #     events = []
+
+    # return render_template("search-results.html",
+    #                        # data=pformat(data),
+    #                        results=events)
+
 
 @app.route("/save-event", methods=["POST"])
 def save_event():
