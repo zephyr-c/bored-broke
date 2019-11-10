@@ -9,14 +9,12 @@
     {% for event in results %}
         <li>
             <a href="{{ event.url }}" target="_blank">{{ event.name.text }}</a>
-            <span><button class="saveEvent" value="{{ event.id }}" name="{{ event.id }}">Save Event</button></span>
+            <span><button class="save-btn" id="{{ event.id }}" name="{{ event.id }}">Save Event</button></span>
         </li>
     {% endfor %}
 </ul>
 
-<script>
-$(".saveEvent")
-</script>
+<script src="/static/event-save.js"></script>
 
 {% endblock %}
 

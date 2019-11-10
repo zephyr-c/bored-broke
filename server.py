@@ -4,6 +4,7 @@ import os
 from jinja2 import StrictUndefined
 
 import requests
+import json
 
 from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
@@ -166,9 +167,12 @@ if already in DB, use existing entry to create new UserEvent
 else add event to Event table, and then create new UserEvent
 eventually, add to user saved events page/template. """
     # user = User.query.filter_by(user_id = session['user_id']).first()
+    eventbrite_id = request.form.get('evtID', "oops!")
+    print("\n"*3)
+    print(eventbrite_id)
+    print("\n"*3)
 
-
-    pass
+    return "#"+eventbrite_id
 
 
 

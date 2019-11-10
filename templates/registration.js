@@ -13,3 +13,6 @@ $('#user-registration').on('submit', (evt) => {
 
     $.post('/register', formData, (res) =>
 })
+
+
+$.post('/save-event', evt.target.attr('name'), (res) =>
