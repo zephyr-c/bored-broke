@@ -18,6 +18,8 @@ EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_TOKEN')
 
 EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
+HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
+
 @app.route("/", methods=["POST", "GET"])
 def homepage():
     """show landing page"""
@@ -120,12 +122,9 @@ def find_events():
                'sort_by': sort,
                }
 
-
-    headers = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
-
     response = requests.get(EVENTBRITE_URL + "events/search/",
                             params=payload,
-                            headers=headers)
+                            headers=HEADERS)
 
     if response.ok:
         data = response.json()  # This was causing an error outside of this if statement
@@ -168,9 +167,24 @@ else add event to Event table, and then create new UserEvent
 eventually, add to user saved events page/template. """
     # user = User.query.filter_by(user_id = session['user_id']).first()
     eventbrite_id = request.form.get('evtID', "oops!")
-    print("\n"*3)
-    print(eventbrite_id)
-    print("\n"*3)
+
+    if not Event.query.filter(Event.eventbrite_id == eventbrite_id).first():
+        response = requests.get(EVENTBRITE_URL + "events/" + eventbrite_id,
+                                headers=HEADERS)
+        data = response.json()
+        new_event = Event(eventbrite_id=eventbrite_id,
+                          event_name=data['name']['text'],
+                          event_URL=data['url'],
+                          date=data["start"]["local"],
+                          category=data["category_id"],
+                          description=data["summary"],
+                          )
+        db.session.add(new_event)
+
+    new_save = UserEvent(eventbrite_id=eventbrite_id,
+                         user_id=session['user_id'])
+    db.session.add(new_save)
+    db.session.commit()
 
     return "#"+eventbrite_id
 

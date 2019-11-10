@@ -4,6 +4,11 @@
 {% if status %}
 <h1> SUBSTITUTE RESULTS </h1>
 {% endif %}
+{% if not session.get('user_id') %}
+    <script>
+        $('.save-btn').remove()
+    </script>
+{% endif %}
 
 <ul>
     {% for event in results %}
