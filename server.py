@@ -13,8 +13,7 @@ from model import User, Event, UserEvent, Interest, connect_to_db, db
 app = Flask(__name__)
 app.secret_key = "SECRETSECRETSECRET"
 
-EVENTBRITE_TOKEN = '6KGWWHMNISTJOXRVMSSL'
-# os.environ.get('EVENTBRITE_TOKEN')
+EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_TOKEN')
 
 EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
@@ -137,7 +136,15 @@ def find_events():
                                 results=events)
 
     else:
-        return render_template("eventbrite_goofed.html")
+        status = "ERROR"
+        sub_data = json.load(open('results.json'))
+        events = sub_data['events']
+
+        return render_template("search-results.html",
+                                results=events,
+                                status=status)
+
+        # return render_template("eventbrite_goofed.html")
 
     # else:
     #     flash(f"Oops! No Events: {response.headers} {response.reason} {response.text}")
