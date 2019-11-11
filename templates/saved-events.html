@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content%}
+<ul>
+    {% for save in saved %}
+    <li>
+        <a href="{{ save.event.event_url }}" target="_blank">{{ save.event.event_name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

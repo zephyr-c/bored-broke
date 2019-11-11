@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>User Profile</h1>
+
+<img src="{{ user.avatar }}">
+
+Username: {{ user.username }}
+Name: {{ user.fname }}
+Zip: {{ user.location }}
+
+<h3><a href="/saved-events/{{ user.user_id }}"> See Saved Events </a></h3>
+
+
+
+{% endblock %}

@@ -51,7 +51,7 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     eventbrite_id = db.Column(db.String, unique=True)
     event_name = db.Column(db.String)
-    event_URL = db.Column(db.String)
+    event_url = db.Column(db.String)
     location = db.Column(db.String)
     date = db.Column(db.DateTime) #start time and end time should be in datetime object
     category = db.Column(db.String)

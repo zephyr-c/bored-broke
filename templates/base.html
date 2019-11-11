@@ -21,6 +21,7 @@
 
 <footer>
 {% if session.get('user_id') %}
+    <a href="/user-profile/{{ session['user_id'] }}">View Profile</a>
     <a href="/logout"> Log Out</a>
 {% else %}
     <a href="/login">Log In</a>

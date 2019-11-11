@@ -89,10 +89,19 @@ def process_registration():
 
 
 
-@app.route("/user-profile")
-def user_profile():
+@app.route("/user-profile/<user_id>")
+def user_profile(user_id):
     """show user profile/interests"""
-    pass
+    user = User.query.filter(User.user_id == user_id).one()
+
+    return render_template('user-profile.html', user=user)
+
+@app.route("/saved-events/<user_id>")
+def show_saved_events(user_id):
+    """show list of user's saved events"""
+    saved = UserEvent.query.filter(UserEvent.user_id == user_id).all()
+
+    return render_template('saved-events.html', saved=saved)
 
 
 @app.route("/event-search")
@@ -157,15 +166,8 @@ def find_events():
 
 @app.route("/save-event", methods=["POST"])
 def save_event():
-    """Save event to user saved events list
+    """Save event to user saved events list"""
 
-reference user ID from session
-get event data from event results
-query event table to see if event already saved by other user
-if already in DB, use existing entry to create new UserEvent
-else add event to Event table, and then create new UserEvent
-eventually, add to user saved events page/template. """
-    # user = User.query.filter_by(user_id = session['user_id']).first()
     eventbrite_id = request.form.get('evtID', "oops!")
 
     if not Event.query.filter(Event.eventbrite_id == eventbrite_id).first():
@@ -174,7 +176,7 @@ eventually, add to user saved events page/template. """
         data = response.json()
         new_event = Event(eventbrite_id=eventbrite_id,
                           event_name=data['name']['text'],
-                          event_URL=data['url'],
+                          event_url=data['url'],
                           date=data["start"]["local"],
                           category=data["category_id"],
                           description=data["summary"],
