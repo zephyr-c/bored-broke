@@ -10,6 +10,7 @@ from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Event, UserEvent, Interest, connect_to_db, db
+from functions import login_success
 
 app = Flask(__name__)
 app.secret_key = "SECRETSECRETSECRET"
@@ -40,7 +41,8 @@ def process_login():
         flash("Username or Password Incorrect")
         return redirect("/")
     else:
-        session['user_id'] = profile.user_id
+        login_success(profile.user_id)
+        # session['user_id'] = profile.user_id
         flash(f"Welcome back {profile.fname}!")
         return redirect("/event-search")
 
@@ -51,7 +53,7 @@ def process_logout():
 
     # There might be a better way to do this as well. More research needed after
     # basic functionality achieved.
-    del session['user_id']
+    del session['user']
 
     return redirect("/") # can this be changed to let them stay wherever they are?
 
@@ -66,26 +68,26 @@ def registration():
 def process_registration():
     """save new user data in system"""
     new_info = request.form
-    users = User.query.all()
-    if (new_info['username'] in [user.username for user in users]
-       or new_info['email'] in [user.email for user in users]):
+    user_info = dict(db.session.query(User.username, User.email).all())
+    if (new_info['username'] in user_info.keys()
+       or new_info['email'] in user_info.values()):
         flash("User Already Exists")
         return redirect('/register')
     else:
         new_user = User(username=new_info['username'],
-                        # password=new_info['password'],
                         fname=new_info['fname'],
                         lname=new_info['lname'],
                         email=new_info['email'],
                         phone=new_info['phone'],
                         location=new_info['location'],
+                        avatar=f"https://robohash.org/{new_info['username']}?set=set4",
                         )
         new_user.set_password(new_info['password'])
         db.session.add(new_user)
         db.session.commit()
-        session['user_id'] = new_user.user_id
+        # session['user_id'] = new_user.user_id
         flash("Success!")
-        return redirect('/event-search')
+        return redirect('/')
 
 
 
@@ -184,7 +186,7 @@ def save_event():
         db.session.add(new_event)
 
     new_save = UserEvent(eventbrite_id=eventbrite_id,
-                         user_id=session['user_id'])
+                         user_id=session['user']['user_id'])
     db.session.add(new_save)
     db.session.commit()
 
