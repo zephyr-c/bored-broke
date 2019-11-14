@@ -38,6 +38,7 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+
     def __repr__(self):
         """Provide helpful representation when printed!"""
         return f"<User {self.user_id} {self.username}>"
@@ -114,12 +115,44 @@ class Interest(db.Model):
 
 ###############################################################################
 # Helper Functions
+def example_data():
+    User.query.delete()
+    UserEvent.query.delete()
+    Event.query.delete()
 
-def connect_to_db(app):
+    citrus = User(username='citrus',
+                  fname='Citrus',
+                  lname='Froot',
+                  email='citrus@orangemail.com',
+                  phone='433-909-6889',
+                  location='94112',
+                  avatar='https://robohash.org/citrus?set=set4')
+    citrus.set_password('password')
+
+    tripp = User(username='tkleinhaus1',
+                 fname='Tripp',
+                 lname='Kleinhaus',
+                 email='tkleinhaus1@ask.com',
+                 phone='590-430-3503',
+                 location='29920',
+                 avatar='https://robohash.org/eaarchitectomaxime.bmp?set=set3')
+    tripp.set_password('KZQq54Rh')
+
+    sinatra = Event(eventbrite_id='80421329361',
+                    event_name='In the Style of Frank Sinatra',
+                    event_url='https://www.eventbrite.com/e/in-the-style-of-frank-sinatra-tickets-80421329361?aff=ebapi',
+                    date='2019-11-08T19:00:00',
+                    category='103',
+                    description='Vintage Noise has become synonymous with lush vocals and gentle strings, blending timeless jazz and exotic sounds of bossa nova.',
+                    )
+    
+    save = UserEvent(eventbrite_id='80421329361', user_id=1)
+
+def connect_to_db(app, db_uri="postgresql:///bored_data"):
     """Connect the database to our Flask app."""
 
     # Configure to use our PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bored_data'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)

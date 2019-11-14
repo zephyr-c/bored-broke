@@ -1,20 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if status %}
+{% if status == "ERROR" %}
 <h1> SUBSTITUTE RESULTS </h1>
 {% endif %}
-{% if not session.get('user_id') %}
-    <script>
-        $('.save-btn').remove()
-    </script>
-{% endif %}
 
+<h2>Search Results</h2>
 <ul>
-    {% for event in results %}
+    {% for event in results.values() %}
         <li>
-            <a href="{{ event.url }}" target="_blank">{{ event.name.text }}</a>
-            <span><button class="save-btn" id="{{ event.id }}" name="{{ event.id }}">Save Event</button></span>
+            <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
+            <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value="{{ event }}">Save Event</button>
         </li>
     {% endfor %}
 </ul>

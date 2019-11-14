@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>  {% block title %}BORED{% endblock %} </title>
-<script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
-</head>
-<body>
+  <head>
+    <title>  {% block title %}BORED{% endblock %} </title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  </head>
+  <body>
     {% for message in get_flashed_messages() %}
-    <ul>
+      <ul>
         <li>{{ message }}</li>
-    </ul>
+      </ul>
     {% endfor %}
-
-
-    {% block content %} CONTENT GOES HERE! {% endblock %}
-
-</body>
-
-<footer>
-{% if session.get('user') %}
-    <a href="/user-profile/{{ session['user_id'] }}">View Profile</a>
-    <a href="/logout"> Log Out</a>
-{% else %}
-    <a href="/">Log In</a>
-{% endif %}
-<a href="/event-search">Search Events</a>
-</footer>
+    <div id="page-container">
+      <div id="content-wrap">
+        {% block content %} CONTENT GOES HERE! {% endblock %}
+      </div>
+      <footer id="footer">
+        {% if session.get('user') %}
+          <a href="/user-profile-{{ session['user']['user_id'] }}">View Profile</a>
+          <a href="/logout"> Log Out</a>
+        {% else %}
+          <a href="/">Log In</a>
+        {% endif %}
+        <a href="/event-search">Search Events</a>
+      </footer>
+    </div>
+  </body>
 </html>

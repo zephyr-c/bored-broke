@@ -1,7 +1,9 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
 
-    {% block title%}Event Search{% endblock %}
-{% block content%}
+{% block title %}Event Search{% endblock %}
+
+{% block content %}
+<h1>Search For Events</h1>
 <form method="GET" action="/event-results">
     <div class="form-group">
         <label for="search-term">Search Term</label>

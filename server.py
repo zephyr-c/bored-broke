@@ -1,4 +1,3 @@
-from pprint import pformat
 import os
 
 from jinja2 import StrictUndefined
@@ -10,7 +9,7 @@ from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Event, UserEvent, Interest, connect_to_db, db
-from functions import login_success
+from functions import *
 
 app = Flask(__name__)
 app.secret_key = "SECRETSECRETSECRET"
@@ -24,18 +23,19 @@ HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
 @app.route("/", methods=["POST", "GET"])
 def homepage():
     """show landing page"""
-    return render_template("landingpage.html")
+    if session.get('user'):
+        return redirect("/event-search")
+    else:
+        return render_template("landingpage.html")
 
 @app.route("/login", methods=["POST"])
 def process_login():
     """Log user in to their account.
     Checks for username in db and checks password correct"""
 
-    # gets form data from HTML form pointed at this route
-    username = request.form.get('username')
-    password = request.form.get('password')
+    username, password = request.form.values()
 
-    profile = User.query.filter(User.username == username).first()
+    profile = find_by_username(username)
 
     if not profile or not profile.check_password(password):
         flash("Username or Password Incorrect")
@@ -90,15 +90,14 @@ def process_registration():
         return redirect('/')
 
 
-
-@app.route("/user-profile/<user_id>")
+@app.route("/user-profile-<user_id>")
 def user_profile(user_id):
     """show user profile/interests"""
     user = User.query.filter(User.user_id == user_id).one()
 
     return render_template('user-profile.html', user=user)
 
-@app.route("/saved-events/<user_id>")
+@app.route("/saved-events-<user_id>")
 def show_saved_events(user_id):
     """show list of user's saved events"""
     saved = UserEvent.query.filter(UserEvent.user_id == user_id).all()
@@ -131,6 +130,7 @@ def find_events():
                'location.address': location,
                'location.within': distance,
                'sort_by': sort,
+               'expand': 'venue',
                }
 
     response = requests.get(EVENTBRITE_URL + "events/search/",
@@ -138,32 +138,29 @@ def find_events():
                             headers=HEADERS)
 
     if response.ok:
-        data = response.json()  # This was causing an error outside of this if statement
-        # if response is an error code there is nothing to turn into json,
-        # must check response okay first.
+        status = "OKAY"
+        data = response.json()
         events = data['events']
-
-        return render_template("search-results.html",
-                                results=events)
 
     else:
         status = "ERROR"
-        sub_data = json.load(open('results.json'))
+        sub_data = json.load(open('sub_data.json'))
         events = sub_data['events']
 
-        return render_template("search-results.html",
-                                results=events,
-                                status=status)
+    custom_events = compress_events(events)
+    print("\n"*3)
+    print(custom_events)
+    print("\n"*3)
+
+    return render_template("search-results.html",
+                            results=custom_events,
+                            status=status)
 
         # return render_template("eventbrite_goofed.html")
 
     # else:
     #     flash(f"Oops! No Events: {response.headers} {response.reason} {response.text}")
     #     events = []
-
-    # return render_template("search-results.html",
-    #                        # data=pformat(data),
-    #                        results=events)
 
 
 @app.route("/save-event", methods=["POST"])
