@@ -132,25 +132,27 @@ def find_events():
                'sort_by': sort,
                'expand': 'venue',
                }
+    retry_count = 0
+    while retry_count < 5:
+        response = requests.get(EVENTBRITE_URL + "events/search/",
+                                params=payload,
+                                headers=HEADERS)
 
-    response = requests.get(EVENTBRITE_URL + "events/search/",
-                            params=payload,
-                            headers=HEADERS)
+        if response.ok:
+            status = "OKAY"
+            data = response.json()
+            events = data['events']
+            break
+        else:
+            print("trying again")
+            continue
 
-    if response.ok:
-        status = "OKAY"
-        data = response.json()
-        events = data['events']
-
-    else:
+    if retry_count >= 5:
         status = "ERROR"
         sub_data = json.load(open('sub_data.json'))
         events = sub_data['events']
 
     custom_events = compress_events(events)
-    print("\n"*3)
-    print(custom_events)
-    print("\n"*3)
 
     return render_template("search-results.html",
                             results=custom_events,
@@ -167,12 +169,15 @@ def find_events():
 def save_event():
     """Save event to user saved events list"""
 
-    eventbrite_id = request.form.get('evtID', "oops!")
+    eventbrite_id = request.form.get('evtID')
 
     if not Event.query.filter(Event.eventbrite_id == eventbrite_id).first():
         response = requests.get(EVENTBRITE_URL + "events/" + eventbrite_id,
                                 headers=HEADERS)
         data = response.json()
+        # print("\n")
+        # print(data)
+        # print("\n")
         new_event = Event(eventbrite_id=eventbrite_id,
                           event_name=data['name']['text'],
                           event_url=data['url'],

@@ -14,3 +14,11 @@
     height:2.0rem;
     text-align: center;
 }
+
+#map {
+    display: inline-block;
+}
+
+#results {
+    display: inline-block;
+}
