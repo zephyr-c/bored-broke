@@ -144,12 +144,14 @@ def find_events():
             events = data['events']
             break
         else:
+            print(response.status_code)
             print("trying again")
+            retry_count += 1
             continue
 
     if retry_count >= 5:
         status = "ERROR"
-        sub_data = json.load(open('sub_data.json'))
+        sub_data = json.load(open('sf-sub-evts.json'))
         events = sub_data['events']
 
     custom_events = compress_events(events)
@@ -193,6 +195,17 @@ def save_event():
     db.session.commit()
 
     return "#"+eventbrite_id
+
+@app.route("/test", methods=["GET"])
+def show_test():
+    sub_data = json.load(open('sf-sub-evts.json'))
+    events = sub_data['events']
+    custom_events = compress_evt_list(events)
+
+    return render_template("result-map.html",
+                           results=custom_events,
+                           # locations=locations
+                           )
 
 
 

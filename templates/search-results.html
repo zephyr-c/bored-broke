@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
-{% block content %}
-
-{% if status == "ERROR" %}
-<h1> SUBSTITUTE RESULTS </h1>
-{% endif %}
-
-<h2>Search Results</h2>
-<ul>
-    {% for event in results.values() %}
-        <li>
-            <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
-            <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event | tojson }}'>Save Event</button>
-        </li>
-    {% endfor %}
-</ul>
-
-<script src="/static/event-save.js"></script>
-
+{% block head%}
+    <script src="/static/resultsMap.js"></script>
+    <script src="/static/event-save.js"></script>
+    <script
+    async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJ47ckkw31qEwG3As2oJzmGyT2SSoTCLU&callback=initMap">
+    </script>
 {% endblock %}
-
+{% block content %}
+    {% if status == "ERROR" %}
+        <h1> SUBSTITUTE RESULTS </h1>
+    {% endif %}
+    <h2>Search Results</h2>
+    <div id="map"></div>
+    <div id="results">
+        <ul>
+            {% for event in results.values() %}
+                <li>
+                    <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
+                    <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event | tojson }}'>Save Event</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
 <!-- hidden object to hold event coordinates? -->

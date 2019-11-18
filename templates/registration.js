@@ -1,3 +1,10 @@
+$('#username').on('change', (evt) => {
+    $.get('current_users', $('#username').val(), (res) =>
+        if(res === True)){
+        alert("Someone is already using that name!")
+    };
+});
+
 $('#user-registration').on('submit', (evt) => {
     evt.preventDefault();
 

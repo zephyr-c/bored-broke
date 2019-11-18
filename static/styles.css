@@ -16,9 +16,15 @@
 }
 
 #map {
-    display: inline-block;
+    position: relative;
+    min-height: 95vh;
+    width: 50%;
+    left: 0;
 }
 
 #results {
     display: inline-block;
+    position: relative;
+    width: 50%;
+    padding-bottom:2.0rem;
 }
