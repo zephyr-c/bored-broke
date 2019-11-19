@@ -10,33 +10,10 @@ function initMap() {
         document.querySelector('#map'),
         {
             center: userCoords,
-            zoom: 15
+            zoom: 12
         }
         );
 
-  //   const locations = [
-  //   {
-  //     name: 'Hackbright Academy',
-  //     coords: {
-  //       lat: 37.7887459,
-  //       lng: -122.4115852
-  //     }
-  //   },
-  //   {
-  //     name: 'Powell Street Station',
-  //     coords: {
-  //       lat: 37.7844605,
-  //       lng: -122.4079702
-  //     }
-  //   },
-  //   {
-  //     name: 'Montgomery Station',
-  //     coords: {
-  //       lat: 37.7894094,
-  //       lng: -122.4013037
-  //     }
-  //   },
-  // ];
 
   let locations = [];
   const places = document.querySelectorAll('.marker-info');
@@ -65,7 +42,7 @@ function initMap() {
 
   for (const marker of markers) {
     const markerInfo = (`
-      <h1>${marker.title}</h1>
+      <h3>${marker.title}</h3>
       <p>
         Located at: <code>${marker.position.lat()}</code>,
         <code>${marker.position.lng()}</code>
@@ -81,8 +58,13 @@ function initMap() {
       infoWindow.open(resultMap, marker);
     });
 
+    marker.addListener('click', () => {
+      infoWindow.open(resultMap, marker);
+    });
+
     marker.addListener('mouseout', () => {
       infoWindow.close(resultMap, marker);
     });
+
   }
 }

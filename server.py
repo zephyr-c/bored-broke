@@ -154,7 +154,7 @@ def find_events():
         sub_data = json.load(open('sf-sub-evts.json'))
         events = sub_data['events']
 
-    custom_events = compress_events(events)
+    custom_events = compress_evt_list(events)
 
     return render_template("search-results.html",
                             results=custom_events,
@@ -204,7 +204,6 @@ def show_test():
 
     return render_template("result-map.html",
                            results=custom_events,
-                           # locations=locations
                            )
 
 

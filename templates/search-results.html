@@ -15,10 +15,11 @@
     <div id="map"></div>
     <div id="results">
         <ul>
-            {% for event in results.values() %}
+            {% for event in results %}
                 <li>
                     <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
-                    <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event | tojson }}'>Save Event</button>
+                    <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event }}'>Save Event</button>
+                    <input type='hidden' class="marker-info" value='{{event.marker | tojson }}'></input>
                 </li>
             {% endfor %}
         </ul>
