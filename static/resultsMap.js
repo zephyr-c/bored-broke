@@ -54,16 +54,8 @@ function initMap() {
       maxWidth: 200
     });
 
-    marker.addListener('mouseover', () => {
-      infoWindow.open(resultMap, marker);
-    });
-
     marker.addListener('click', () => {
       infoWindow.open(resultMap, marker);
-    });
-
-    marker.addListener('mouseout', () => {
-      infoWindow.close(resultMap, marker);
     });
 
   }

@@ -107,11 +107,13 @@ class Interest(db.Model):
     school_activities = db.Column(db.Boolean)
     other = db.Column(db.Boolean)
 
-# class Activity(db.Model):
+class Activity(db.Model):
 
-#     __tablename__ = "activity_suggestions"
+    __tablename__ = "activity_ideas"
 
-#     pass
+    activity_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    activity = db.Column(db.String)
+    description = db.Column(db.String)
 
 ###############################################################################
 # Helper Functions

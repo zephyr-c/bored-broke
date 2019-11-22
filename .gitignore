@@ -3,3 +3,4 @@ secrets.sh
 __pycache__
 *.pyc
 reginald.sh
+sandbox/

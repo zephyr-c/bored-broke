@@ -4,7 +4,7 @@ from sqlalchemy import func
 from model import User
 #classes below will be defined/seeded later once basic user functionality is up
 # from model import Interest
-# from model import Activity
+from model import Activity
 
 from model import connect_to_db, db
 from server import app
@@ -36,6 +36,22 @@ def load_users():
     # Commit to DB or user won't end up there ever
     db.session.commit()
 
+def load_activities():
+    """Load activity ideas into database"""
+    # Delete rows in table to prevent duplicates if file run again
+    Activity.query.delete()
+
+    for row in open("activities.txt"):
+        row = row.rstrip().split("|")
+        activity, description = row
+
+        activity = Activity(activity=activity,
+                            description=description,)
+
+        db.session.add(activity)
+    db.session.commit()
+
+
 
 def set_val_user_id():
     """Set value for thenext user_id after seeding data"""
@@ -58,3 +74,4 @@ if __name__ == "__main__":
     #Import user data
     load_users()
     set_val_user_id()
+    load_activities()
