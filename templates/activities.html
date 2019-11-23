@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Activity Suggestions {% endblock %}
+
+{% block content %}
+    <div id="container"></div>
+    <button id="test">Test Button</button>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/activities.jsx" type="text/jsx"></script>
+    <script> $('#test').on('click', () => {
+        $.get('/activities.json', (res) => {
+            console.log(res);
+        });
+    })</script>
+{% endblock %}

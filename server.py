@@ -4,6 +4,7 @@ from jinja2 import StrictUndefined
 
 import requests
 import json
+import random
 
 from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
@@ -196,14 +197,25 @@ def save_event():
 
     return "#"+eventbrite_id
 
+@app.route("/activities.json", methods=["GET"])
+def get_random_activity():
+    """Return random activity selection from database"""
+    suggestion = random.choice(Activity.query.all())
+    activity = suggestion.activity
+    print(activity)
+    description = suggestion.description
+    print(description)
+
+    return jsonify({"activity": activity,
+                    "description": description})
+
 @app.route("/test", methods=["GET"])
 def show_test():
-    sub_data = json.load(open('sf-sub-evts.json'))
-    events = sub_data['events']
-    custom_events = compress_evt_list(events)
+    # sub_data = json.load(open('sf-sub-evts.json'))
+    # events = sub_data['events']
+    # custom_events = compress_evt_list(events)
 
-    return render_template("result-map.html",
-                           results=custom_events,
+    return render_template("activities.html"
                            )
 
 

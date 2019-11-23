@@ -3,6 +3,9 @@
   <head>
     <title>  {% block title %}BORED{% endblock %} </title>
     <link rel="stylesheet" href="static/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.1/react.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.1/react-dom.js" crossorigin></script>
     <script
     src="https://code.jquery.com/jquery-3.4.1.js"
     integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
@@ -30,5 +33,7 @@
         <a href="/test">Test Page</a>
       </footer>
     </div>
+    {% block js %}
+    {% endblock %}
   </body>
 </html>
