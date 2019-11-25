@@ -72,6 +72,6 @@ if __name__ == "__main__":
     db.create_all()
 
     #Import user data
-    load_users()
-    set_val_user_id()
+    # load_users()
+    # set_val_user_id()
     load_activities()

@@ -105,6 +105,11 @@ def show_saved_events(user_id):
 
     return render_template('saved-events.html', saved=saved)
 
+@app.route("/saved-events.json", methods=['GET'])
+def get_user_events():
+    saved_events = UserEvent.query.filter_by(user_id = user_id)
+    return jsonify({"saved_events": saved_events})
+
 
 @app.route("/event-search")
 def show_search_form():
@@ -143,6 +148,8 @@ def find_events():
             status = "OKAY"
             data = response.json()
             events = data['events']
+            with open('sub-evts.json', 'w') as outfile:
+                json.dump(data, outfile)
             break
         else:
             print(response.status_code)
@@ -152,7 +159,7 @@ def find_events():
 
     if retry_count >= 5:
         status = "ERROR"
-        sub_data = json.load(open('sf-sub-evts.json'))
+        sub_data = json.load(open('sub_data/sf-sub-evts.json'))
         events = sub_data['events']
 
     custom_events = compress_evt_list(events)
@@ -209,14 +216,17 @@ def get_random_activity():
     return jsonify({"activity": activity,
                     "description": description})
 
-@app.route("/test", methods=["GET"])
-def show_test():
-    # sub_data = json.load(open('sf-sub-evts.json'))
-    # events = sub_data['events']
-    # custom_events = compress_evt_list(events)
+@app.route("/test.json", methods=["GET"])
+def serve_test_results():
+    sub_data = json.load(open('sub_data/sf-sub-evts.json'))
+    events = sub_data['events']
+    custom_events = compress_evt_list(events)
 
-    return render_template("activities.html"
-                           )
+    return jsonify(results=custom_events)
+
+@app.route("/test")
+def show_test_page():
+    return render_template("test-page.html")
 
 
 
