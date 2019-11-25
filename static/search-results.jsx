@@ -22,21 +22,30 @@ class EventTile extends React.Component {
         return(
             <div className="event-tile">
                 <a href={this.props.url}>{this.props.event_name}</a>
+                <span>
+                <SaveButton event={this.props.event_data} />
+                </span>
             </div>
             )
     }
 }
 
-// class SaveButton extends React.Component {
-//     constructor(props){
-//         super(props)
-//     }
+class SaveButton extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = { saved: false }
+    }
 
-//     render(){
+    render(){
 
-//         return()
-//     }
-// }
+        return(
+            <button className="save-btn" 
+                id={ this.props.event.eventbrite_id }
+                name={ this.props.event.eventbrite_id } 
+                value={ this.props.event }>Save Event</button>
+            );
+    }
+}
 
 class EventList extends React.Component {
     constructor(props){
@@ -51,6 +60,7 @@ class EventList extends React.Component {
                 <EventTile key={currentResult.eventbrite_id}
                 url={currentResult.event_url}
                 event_name={currentResult.name}
+                event_data={currentResult}
                 />
             );
         }
