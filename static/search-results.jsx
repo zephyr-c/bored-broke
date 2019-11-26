@@ -1,16 +1,44 @@
-// class ResultMap extends React.Component {
-//     constructor(props){
-//         super(props)
-//     }
+class ResultMap extends React.Component {
+    constructor(props) {
+        super(props);
+        this.googleMapRef = React.createRef();
+        }
 
-//     render(){
-//         // initmap goes here?
+    componentDidMount() {
+        const googleMapScript = document.createElement('script')
+        googleMapScript.src =
+        `https://maps.googleapis.com/maps/api/js?key=AIzaSyBJ47ckkw31qEwG3As2oJzmGyT2SSoTCLU&callback=initMap`
+        window.document.body.appendChild(googleMapScript);
 
-//         return (
-//             <div id="map"></div>
-//             )
-//     }
-// }
+        googleMapScript.addEventListener("load", () => {
+            this.googleMap = this.initMap();
+        });
+    }
+
+    initMap = () => {
+        new window.google.maps.Map(this.googleMapRef.current, {
+            zoom: 12,
+            center: {
+                lat: 37.7887459,
+                lng: -122.4115852
+            },
+            disableDefaultUI: true,
+        })
+    }
+
+
+
+    render(){
+
+        return (
+            <div
+              id="map"
+              ref={this.googleMapRef}
+              style={{ width: '400px', height: '300px' }}
+            />
+            )
+    }
+}
 
 class EventTile extends React.Component {
     constructor(props){
@@ -73,17 +101,21 @@ class PageContainer extends React.Component {
     constructor(props){
         super(props);
 
-        this.state = { events: [] }
-        this.updateEvents = this.updateEvents.bind(this);
+        this.state = { events: [],
+                       markers: [] }
+        this.updateResults = this.updateResults.bind(this);
     }
 
     getResults = () => {
-        $.get('/test.json', this.updateEvents)
+        $.get('/test.json', this.updateResults)
     }
 
-    updateEvents(response) {
+    updateResults(response) {
         const events = response.results;
-        this.setState({ events: events });
+        const markers = response.markers;
+        // console.log(markers)
+        this.setState({ events: events,
+                        markers: markers });
     }
 
     componentDidMount() {
@@ -94,6 +126,7 @@ class PageContainer extends React.Component {
 
         return(
             <div>
+            <ResultMap places={this.state.markers} />
             <EventList results={this.state.events} />
             </div>
             )

@@ -221,8 +221,11 @@ def serve_test_results():
     sub_data = json.load(open('sub_data/sf-sub-evts.json'))
     events = sub_data['events']
     custom_events = compress_evt_list(events)
+    markers = [event['marker'] for event in custom_events]
+    # print(markers)
 
-    return jsonify(results=custom_events)
+    return jsonify(results=custom_events,
+                   markers=markers)
 
 @app.route("/test")
 def show_test_page():
