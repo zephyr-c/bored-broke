@@ -225,7 +225,8 @@ def serve_test_results():
     # print(markers)
 
     return jsonify(results=custom_events,
-                   markers=markers)
+                   markers=markers,
+                   user_id=session['user']['user_id'])
 
 @app.route("/test")
 def show_test_page():
