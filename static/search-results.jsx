@@ -7,25 +7,71 @@ class ResultMap extends React.Component {
     componentDidMount() {
         const googleMapScript = document.createElement('script')
         googleMapScript.src =
-        `https://maps.googleapis.com/maps/api/js?key=AIzaSyBJ47ckkw31qEwG3As2oJzmGyT2SSoTCLU&callback=initMap`
+        `https://maps.googleapis.com/maps/api/js?key=AIzaSyAjzcFuaU59MQFb9_uODWbobJDnQ3Zm_A0`
         window.document.body.appendChild(googleMapScript);
 
         googleMapScript.addEventListener("load", () => {
             this.googleMap = this.initMap();
+            this.createMarkers();
         });
     }
 
-    initMap = () => {
+    initMap = () =>
         new window.google.maps.Map(this.googleMapRef.current, {
             zoom: 12,
             center: {
                 lat: 37.7887459,
                 lng: -122.4115852
             },
-            disableDefaultUI: true,
-        })
-    }
+        });
 
+    createMarkers = () => {
+
+            let locations = [];
+            for (const place of this.props.places){
+                let marker = place
+                marker.coords.lat = parseFloat(marker.coords.lat);
+                marker.coords.lng = parseFloat(marker.coords.lng);
+                locations.push(marker);
+            };
+            console.log(locations)
+
+            const markers = [];
+            for (const location of locations) {
+                markers.push(new window.google.maps.Marker({
+                    position: location.coords,
+                    title: location.name,
+                    map: this.googleMap,
+                    // icon: {
+                    //     url: '/static/marker.svg',
+                    //     scaledSize: {
+                    //         width: 30,
+                    //         height: 30
+                    //     }
+                    // }
+                }));
+            }
+
+            for (const marker of markers) {
+                const markerInfo = (`
+                  <h3>${marker.title}</h3>
+                  <p>
+                    Located at: <code>${marker.position.lat()}</code>,
+                    <code>${marker.position.lng()}</code>
+                  </p>
+                `);
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: markerInfo,
+                    maxWidth: 200
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(this.googleMap, marker);
+                });
+
+            }
+    }
 
 
     render(){
@@ -34,7 +80,7 @@ class ResultMap extends React.Component {
             <div
               id="map"
               ref={this.googleMapRef}
-              style={{ width: '400px', height: '300px' }}
+              style={{ width: '800px', height: '600px' }}
             />
             )
     }
@@ -67,9 +113,9 @@ class SaveButton extends React.Component {
     render(){
 
         return(
-            <button className="save-btn" 
+            <button className="save-btn"
                 id={ this.props.event.eventbrite_id }
-                name={ this.props.event.eventbrite_id } 
+                name={ this.props.event.eventbrite_id }
                 value={ this.props.event }>Save Event</button>
             );
     }
@@ -93,7 +139,7 @@ class EventList extends React.Component {
             );
         }
 
-        return(<div>{resultList}</div>)
+        return(<div id="results">{resultList}</div>)
     }
 }
 
