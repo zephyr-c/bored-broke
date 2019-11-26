@@ -92,12 +92,12 @@ class EventTile extends React.Component {
     }
 
     render(){
-
+        const saveButton = <SaveButton event={this.props.event_data} />
         return(
             <div className="event-tile">
                 <a href={this.props.url}>{this.props.event_name}</a>
                 <span>
-                <SaveButton event={this.props.event_data} />
+                {this.props.user && saveButton}
                 </span>
             </div>
             )
@@ -135,6 +135,7 @@ class EventList extends React.Component {
                 url={currentResult.event_url}
                 event_name={currentResult.name}
                 event_data={currentResult}
+                user={this.props.user}
                 />
             );
         }
@@ -148,7 +149,8 @@ class PageContainer extends React.Component {
         super(props);
 
         this.state = { events: [],
-                       markers: [] }
+                       markers: [],
+                       user: null }
         this.updateResults = this.updateResults.bind(this);
     }
 
@@ -174,7 +176,7 @@ class PageContainer extends React.Component {
 
         return(
             <div>
-            <EventList results={this.state.events} />
+            <EventList results={this.state.events} user={this.state.user} />
             </div>
             )
     }

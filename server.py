@@ -222,11 +222,15 @@ def serve_test_results():
     events = sub_data['events']
     custom_events = compress_evt_list(events)
     markers = [event['marker'] for event in custom_events]
+    if not session.get('user'):
+        user_id = None
+    else:
+        user_id = session['user']['user_id']
     # print(markers)
 
     return jsonify(results=custom_events,
                    markers=markers,
-                   user_id=session['user']['user_id'])
+                   user_id=user_id)
 
 @app.route("/test")
 def show_test_page():
