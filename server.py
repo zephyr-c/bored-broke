@@ -202,16 +202,21 @@ def save_event():
     db.session.add(new_save)
     db.session.commit()
 
-    return "#"+eventbrite_id
+    return jsonify(status="success")
 
 @app.route("/saved-events.json", methods=["GET"])
 def check_saved():
     """Check if user already saved event"""
-    evt_id = request.args.get('evtID')
+    evt_id = request.args.get('evtId')
     user = int(request.args.get('userId'))
     all_saved = set(db.session.query(UserEvent.eventbrite_id, UserEvent.user_id).all())
 
     status = (evt_id, user) in all_saved
+
+    # print("\n")
+    # print(evt_id, user)
+    # print(status)
+    # print("\n")
 
     return jsonify(saved=status)
 
@@ -231,7 +236,7 @@ def get_random_activity():
 
 @app.route("/test.json", methods=["GET"])
 def serve_test_results():
-    sub_data = json.load(open('sub_data/sf-sub-evts.json'))
+    sub_data = json.load(open('sub_data/sub_data.json'))
     events = sub_data['events']
     custom_events = compress_evt_list(events)
     markers = [event['marker'] for event in custom_events]

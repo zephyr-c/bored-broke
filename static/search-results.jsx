@@ -106,16 +106,24 @@ class EventTile extends React.Component {
 class SaveButton extends React.Component {
     constructor(props){
         super(props)
-        this.state = { saved: true }
+        this.state = { saved: false }
         this.checkSaved = this.checkSaved.bind(this)
+        this.saveEvent = this.saveEvent.bind(this)
     }
 
     checkSaved() {
-    let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user};
+    let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user, };
     $.get("/saved-events.json", data, (response) => {
         this.setState({ saved: response.saved });
         });
     }
+
+    saveEvent(evt) {
+        $.post("/save-event", {"evtID": evt.target.id}, (response) =>
+            response.status === 'success' ? this.setState({ saved: true }) :
+            alert("Something Went Wrong"));
+    }
+
 
     componentDidMount() {
         this.checkSaved();
@@ -123,17 +131,19 @@ class SaveButton extends React.Component {
 
 
     render(){
-        const notSaved = <button className="save-btn"
+        const notSaved = <button onClick={ this.saveEvent }
+                className="save-btn"
                 id={ this.props.event.eventbrite_id }
                 name={ this.props.event.eventbrite_id }>Save Event</button>;
 
         const isSaved = <button className="save-btn"
                 id={ this.props.event.eventbrite_id }
-                name={ this.props.event.eventbrite_id }>Event Saved!</button>;
+                name={ this.props.event.eventbrite_id }
+                disabled={true}>Event Saved!</button>;
 
         return(
             <span>
-            { this.state.saved === false ? isSaved : notSaved }
+            { this.state.saved === true ? isSaved : notSaved }
             </span>
             )
         }
