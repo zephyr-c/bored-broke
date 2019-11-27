@@ -105,10 +105,10 @@ def show_saved_events(user_id):
 
     return render_template('saved-events.html', saved=saved)
 
-@app.route("/saved-events.json", methods=['GET'])
-def get_user_events():
-    saved_events = UserEvent.query.filter_by(user_id = user_id)
-    return jsonify({"saved_events": saved_events})
+# @app.route("/saved-events.json", methods=['GET'])
+# def get_user_events():
+#     saved_events = UserEvent.query.filter_by(user_id = user_id)
+#     return jsonify({"saved_events": saved_events})
 
 
 @app.route("/event-search")
@@ -203,6 +203,19 @@ def save_event():
     db.session.commit()
 
     return "#"+eventbrite_id
+
+@app.route("/saved-events.json", methods=["GET"])
+def check_saved():
+    """Check if user already saved event"""
+    evt_id = request.args.get('evtID')
+    user = int(request.args.get('userId'))
+    all_saved = set(db.session.query(UserEvent.eventbrite_id, UserEvent.user_id).all())
+
+    status = (evt_id, user) in all_saved
+
+    return jsonify(saved=status)
+
+
 
 @app.route("/activities.json", methods=["GET"])
 def get_random_activity():

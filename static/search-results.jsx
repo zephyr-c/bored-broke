@@ -1,4 +1,5 @@
 // class ResultMap extends React.Component {
+//     <ResultMap places={this.state.markers} />
 //     constructor(props) {
 //         super(props);
 //         this.googleMapRef = React.createRef();
@@ -92,13 +93,11 @@ class EventTile extends React.Component {
     }
 
     render(){
-        const saveButton = <SaveButton event={this.props.event_data} />
+        const saveButton = <SaveButton event={this.props.event_data} user={this.props.user} />
         return(
             <div className="event-tile">
                 <a href={this.props.url}>{this.props.event_name}</a>
-                <span>
                 {this.props.user && saveButton}
-                </span>
             </div>
             )
     }
@@ -107,19 +106,39 @@ class EventTile extends React.Component {
 class SaveButton extends React.Component {
     constructor(props){
         super(props)
-        this.state = { saved: false }
+        this.state = { saved: true }
+        this.checkSaved = this.checkSaved.bind(this)
     }
+
+    checkSaved() {
+    let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user};
+    $.get("/saved-events.json", data, (response) => {
+        this.setState({ saved: response.saved });
+        });
+    }
+
+    componentDidMount() {
+        this.checkSaved();
+    }
+
 
     render(){
+        const notSaved = <button className="save-btn"
+                id={ this.props.event.eventbrite_id }
+                name={ this.props.event.eventbrite_id }>Save Event</button>;
+
+        const isSaved = <button className="save-btn"
+                id={ this.props.event.eventbrite_id }
+                name={ this.props.event.eventbrite_id }>Event Saved!</button>;
 
         return(
-            <button className="save-btn"
-                id={ this.props.event.eventbrite_id }
-                name={ this.props.event.eventbrite_id }
-                value={ this.props.event }>Save Event</button>
-            );
+            <span>
+            { this.state.saved === false ? isSaved : notSaved }
+            </span>
+            )
+        }
     }
-}
+
 
 class EventList extends React.Component {
     constructor(props){
