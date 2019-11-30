@@ -19,7 +19,8 @@ EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_TOKEN')
 
 EVENTBRITE_URL = "https://www.eventbriteapi.com/v3/"
 
-HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN}
+HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN,
+           'Content-Type':'application/json'}
 
 @app.route("/", methods=["POST", "GET"])
 def homepage():
@@ -52,8 +53,6 @@ def process_login():
 def process_logout():
     """Log user out from account by deleting info from Flask session"""
 
-    # There might be a better way to do this as well. More research needed after
-    # basic functionality achieved.
     del session['user']
 
     return redirect("/") # can this be changed to let them stay wherever they are?
@@ -123,19 +122,19 @@ def find_events():
 
 # Should API calls be helper functions in a separate file???
 
-    query = request.args.get('query')
-    location = request.args.get('location')
-    distance = request.args.get('distance')
-    measurement = request.args.get('measurement')
-    sort = request.args.get('sort')
+    query = request.args.get('what')
+    location = request.args.get('where')
+    # distance = request.args.get('distance')
+    # measurement = request.args.get('measurement')
+    # sort = request.args.get('sort')
 
-    distance = distance + measurement
+    # distance = distance + measurement
 
     payload = {'q': query,
                'price': 'free',
                'location.address': location,
-               'location.within': distance,
-               'sort_by': sort,
+               # 'location.within': distance,
+               'sort_by': 'date',
                'expand': 'venue',
                }
     retry_count = 0
@@ -167,12 +166,6 @@ def find_events():
     return render_template("search-results.html",
                             results=custom_events,
                             status=status)
-
-        # return render_template("eventbrite_goofed.html")
-
-    # else:
-    #     flash(f"Oops! No Events: {response.headers} {response.reason} {response.text}")
-    #     events = []
 
 
 @app.route("/save-event", methods=["POST"])
@@ -213,11 +206,6 @@ def check_saved():
 
     status = (evt_id, user) in all_saved
 
-    # print("\n")
-    # print(evt_id, user)
-    # print(status)
-    # print("\n")
-
     return jsonify(saved=status)
 
 
@@ -234,20 +222,33 @@ def get_random_activity():
     return jsonify({"activity": activity,
                     "description": description})
 
+
 @app.route("/test.json", methods=["GET"])
 def serve_test_results():
-    sub_data = json.load(open('sub_data/sub_data.json'))
-    events = sub_data['events']
-    custom_events = compress_evt_list(events)
-    markers = [event['marker'] for event in custom_events]
+    what = request.args.get('what')
+    where = request.args.get('where')
+
+    payload = {'q': what,
+               'price': 'free',
+               'location.address': where,
+               'sort_by': 'date',
+               'expand': 'venue',
+               }
+
+    results = mock_event_search(payload)
+
+    # markers = [event['marker'] for event in results['events']]
     if not session.get('user'):
         user_id = None
     else:
         user_id = session['user']['user_id']
-    # print(markers)
+    print("\n")
+    print(user_id, results['events'])
+    print("\n")
 
-    return jsonify(results=custom_events,
-                   markers=markers,
+    return jsonify(status=results['status'],
+                   results=results['events'],
+                   markers=results['markers'],
                    user_id=user_id)
 
 @app.route("/test")

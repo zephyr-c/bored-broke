@@ -16,7 +16,7 @@
         <ul>
             {% for event in results %}
                 <li>
-                    <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
+                    <a href="{{ event.event_url }}" target="_blank">{{ event.name }}</a>
                     <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event }}'>Save Event</button>
                     <input type='hidden' class="marker-info" value='{{ event.marker | tojson }}'></input>
                 </li>
@@ -25,4 +25,3 @@
     </div>
 <script src="/static/event-save.js"></script>
 {% endblock %}
-<!-- hidden object to hold event coordinates? -->

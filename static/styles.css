@@ -28,3 +28,7 @@
     width: 50%;
     padding-bottom:2.0rem;
 }
+
+.form-group {
+    display: inline-block;
+}
