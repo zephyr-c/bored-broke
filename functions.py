@@ -46,8 +46,8 @@ def search_events(payload):
             continue
 
     if retry_count >= 5:
-        status = "ERROR"
-        sub_data = json.load(open('sub_data/sf-sub-evts.json'))
+        status = "SUBSTITUTE RESULTS"
+        sub_datsa = json.load(open('sub_data/sf-sub-evts.json'))
         events = sub_data['events']
 
     custom_events = compress_evt_list(events)
@@ -77,10 +77,11 @@ def compress_evt_list(events):
     custom_events = []
 
     for e in events:
+        date, time = e['start']['local'].split("T")
         custom_events.append({'name': e['name']['text'],
                             'eventbrite_id': e['id'],
                             'event_url': e['url'],
-                            'date': e['start']['local'],
+                            'event_date': {'date': date, 'start_time': time},
                             'category': e['category_id'],
                             'description': e['summary'],
                             'location': e['venue']['address']['localized_address_display'],
@@ -89,6 +90,16 @@ def compress_evt_list(events):
                             'lng': e['venue']['longitude']}},
                             })
     return custom_events
+
+    def evt_date_sort(events):
+        """Group Event Results by Date"""
+        date_groups = {}
+        for event in events:
+            date, time = event[date].split("T")
+            date_groups[date] = date_groups.get(date, [])
+            date_groups[date].append(event)
+
+        return date_groups
 
 
 

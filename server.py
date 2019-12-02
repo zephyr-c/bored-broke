@@ -5,6 +5,7 @@ from jinja2 import StrictUndefined
 import requests
 import json
 import random
+import datetime
 
 from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
@@ -100,7 +101,7 @@ def user_profile(user_id):
 @app.route("/saved-events-<user_id>")
 def show_saved_events(user_id):
     """show list of user's saved events"""
-    saved = UserEvent.query.filter(UserEvent.user_id == user_id).all()
+    saved = UserEvent.query.filter(UserEvent.user_id == user_id, UserEvent.event.date >= datetime.datetime.now()).all()
 
     return render_template('saved-events.html', saved=saved)
 
@@ -242,9 +243,8 @@ def serve_test_results():
         user_id = None
     else:
         user_id = session['user']['user_id']
-    print("\n")
-    print(user_id, results['events'])
-    print("\n")
+
+    print(results['markers'])
 
     return jsonify(status=results['status'],
                    results=results['events'],

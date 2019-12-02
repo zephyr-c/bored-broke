@@ -26,7 +26,7 @@ class ResultMap extends React.Component {
         });
 
     createMarkers = () => {
-
+            console.log(this.props.places)
             let locations = [];
             for (const place of this.props.places){
                 let marker = place
@@ -34,7 +34,7 @@ class ResultMap extends React.Component {
                 marker.coords.lng = parseFloat(marker.coords.lng);
                 locations.push(marker);
             };
-            console.log(locations)
+            // console.log(locations)
 
             const markers = [];
             for (const location of locations) {
@@ -43,7 +43,7 @@ class ResultMap extends React.Component {
                     title: location.name,
                     map: this.googleMap,
                     icon: {
-                        url: '/static/marker.svg',
+                        url: '/static/img/marker.svg',
                         scaledSize: {
                             width: 30,
                             height: 30
@@ -75,12 +75,11 @@ class ResultMap extends React.Component {
 
 
     render(){
-
         return (
             <div
               id="map"
               ref={this.googleMapRef}
-              style={{ width: '800px', height: '600px' }}
+              style={{ width: '500px', height: '300px' }}
             />
             )
     }
@@ -95,6 +94,7 @@ class EventTile extends React.Component {
         const saveButton = <SaveButton event={this.props.event_data} user={this.props.user} />
         return(
             <div className="event-tile">
+                <h2>{this.props.date}</h2>
                 <a href={this.props.url}>{this.props.event_name}</a>
                 {this.props.user && saveButton}
             </div>
@@ -158,8 +158,11 @@ class EventList extends React.Component {
         const resultList = [];
         if (this.props.results) {
             for (const currentResult of this.props.results) {
+                const date = new Date(currentResult.date);
+                const dateStr = date.toDateString()
                 resultList.push(
                     <EventTile key={currentResult.eventbrite_id}
+                    date={dateStr}
                     url={currentResult.event_url}
                     event_name={currentResult.name}
                     event_data={currentResult}
@@ -246,16 +249,12 @@ class PageContainer extends React.Component {
         super(props);
 
         this.state = { events: [],
-                       markers: [],
+                       markers: null,
                        status: '',
                        user: null }
         this.updateResults = this.updateResults.bind(this);
         this.searchEvents = this.searchEvents.bind(this);
     }
-
-    // getResults = () => {
-    //     $.get('/test.json', this.updateResults)
-    // }
 
     searchEvents(query) {
         $.get('/test.json', query, this.updateResults)
@@ -270,7 +269,7 @@ class PageContainer extends React.Component {
                         markers: markers,
                         status: status,
                         user: user });
-        console.log(this.state)
+        console.log('updateResults: ' + this.state.markers)
     }
 
     // componentDidMount() {
@@ -285,7 +284,7 @@ class PageContainer extends React.Component {
         return(
             <div>
             <SearchForm searchEvents={this.searchEvents}  />
-            {this.state.markers !== [] && resultMap}
+            {this.state.markers && resultMap}
             {this.state.events !== [] && searchResults}
             </div>
             )

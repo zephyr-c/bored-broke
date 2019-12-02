@@ -1,0 +1,24 @@
+{%extends 'base.html'%}
+{% block title %}TEST PAGE{% endblock %}
+{% block head %}
+    <script src="/static/resultsMap.js"></script>
+    <script
+    async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJ47ckkw31qEwG3As2oJzmGyT2SSoTCLU&callback=initMap">
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="map"></div>
+    <div id="results">
+        <ul>
+            {% for event in results %}
+                <li>
+                    <a href="{{ event.url }}" target="_blank">{{ event.name }}</a>
+                    <button class="save-btn" id="{{ event.eventbrite_id }}" name="{{ event.eventbrite_id }}" value='{{ event }}'>Save Event</button>
+                    <input type='hidden' class="marker-info" id='{{ event.eventbrite_id }}' value='{{event.marker | tojson }}'></input>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
