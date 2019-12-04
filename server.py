@@ -121,8 +121,6 @@ def show_search_form():
 def find_events():
     """Search for and display free events from EventBrite"""
 
-# Should API calls be helper functions in a separate file???
-
     query = request.args.get('what')
     location = request.args.get('where')
     # distance = request.args.get('distance')
@@ -226,17 +224,20 @@ def get_random_activity():
 
 @app.route("/test.json", methods=["GET"])
 def serve_test_results():
+    arg_dict = request.args
+    print(arg_dict)
     what = request.args.get('what')
-    where = request.args.get('where')
+    print("What: ", what)
+    where = request.args.get("where")
+    print("Where: ", where)
+    when = request.args.get('when', datetime.datetime.now())
+    print("When: ", when)
 
     payload = {'q': what,
-               'price': 'free',
                'location.address': where,
-               'sort_by': 'date',
-               'expand': 'venue',
                }
 
-    results = mock_event_search(payload)
+    results = postman_search(payload)
 
     # markers = [event['marker'] for event in results['events']]
     if not session.get('user'):
@@ -244,7 +245,7 @@ def serve_test_results():
     else:
         user_id = session['user']['user_id']
 
-    print(results['markers'])
+    # print(results['markers'])
 
     return jsonify(status=results['status'],
                    results=results['events'],

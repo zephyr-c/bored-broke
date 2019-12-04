@@ -73,6 +73,11 @@ class ResultMap extends React.Component {
             }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.places != prevProps.places) {
+            this.createMarkers();
+        }
+    }
 
     render(){
         return (
@@ -184,7 +189,7 @@ class EventList extends React.Component {
 class SearchForm extends React.Component {
     constructor(props){
         super(props);
-
+        var today = new Date()
         this.state = { where: '',
                        when: '',
                        what: ''}
@@ -204,7 +209,11 @@ class SearchForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const query = JSON.stringify(this.state);
+        const query = {
+            where: this.state.where,
+            when: this.state.when,
+            what: this.state.what,
+        };
         this.props.searchEvents(query);
     }
 
@@ -233,7 +242,7 @@ class SearchForm extends React.Component {
                     When:
                     <input
                     name="when"
-                    type="text"
+                    type="date"
                     value={this.state.when}
                     onChange={this.handleInput} />
                 </label>
@@ -249,7 +258,7 @@ class PageContainer extends React.Component {
         super(props);
 
         this.state = { events: [],
-                       markers: null,
+                       markers: [],
                        status: '',
                        user: null }
         this.updateResults = this.updateResults.bind(this);
@@ -257,6 +266,7 @@ class PageContainer extends React.Component {
     }
 
     searchEvents(query) {
+        console.log(query)
         $.get('/test.json', query, this.updateResults)
     }
 
@@ -284,7 +294,7 @@ class PageContainer extends React.Component {
         return(
             <div>
             <SearchForm searchEvents={this.searchEvents}  />
-            {this.state.markers && resultMap}
+            <ResultMap places={this.state.markers} />
             {this.state.events !== [] && searchResults}
             </div>
             )

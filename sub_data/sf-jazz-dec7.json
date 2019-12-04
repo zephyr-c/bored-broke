@@ -1,0 +1,246 @@
+{
+  "articles": {},
+  "current_user_id": "26940574107",
+  "profile_search": {},
+  "article_search": {},
+  "profiles": {},
+  "search_id": "63d8174f161111ea9cf712a36790e616",
+  "is_staff": false,
+  "events": {
+    "pagination": {
+      "continuation": null,
+      "page_count": 1,
+      "page_number": 1,
+      "page_size": 20,
+      "object_count": 3
+    },
+    "results": [
+      {
+        "timezone": "America/Los_Angeles",
+        "id": "63033721558",
+        "tickets_url": "https://www.eventbrite.com/e/live-jazz-atlascafesf-each-thurs-fri-saturday-nights-8-10pm-never-a-cover-charge-tickets-63033721558",
+        "tickets_by": "Eventbrite",
+        "primary_organizer_id": "18007681528",
+        "hide_end_date": false,
+        "start_date": "2019-12-07",
+        "end_time": "22:00",
+        "_type": "destination_event",
+        "end_date": "2019-12-07",
+        "tags": [
+          {
+            "prefix": "EventbriteSubCategory",
+            "tag": "EventbriteSubCategory/3002",
+            "display_name": "Blues & Jazz"
+          },
+          {
+            "prefix": "EventbriteCategory",
+            "tag": "EventbriteCategory/103",
+            "display_name": "Music",
+            "localized": {
+              "display_name": "Music"
+            }
+          },
+          {
+            "prefix": "EventbriteFormat",
+            "tag": "EventbriteFormat/6",
+            "display_name": "Concert or Performance"
+          }
+        ],
+        "eventbrite_event_id": "63033721558",
+        "start_time": "20:00",
+        "primary_venue": {
+          "_type": "destination_venue",
+          "name": "Atlas Cafe",
+          "venue_profile_id": null,
+          "address": {
+            "city": "San Francisco",
+            "country": "US",
+            "region": "CA",
+            "longitude": "-122.411453",
+            "localized_address_display": "3049 20th Street at Alabama, San Francisco, CA 94110",
+            "postal_code": "94110",
+            "address_1": "3049 20th Street",
+            "address_2": "at Alabama",
+            "latitude": "37.7589411",
+            "localized_multi_line_address_display": [
+              "3049 20th Street",
+              "at Alabama",
+              "San Francisco, CA 94110"
+            ],
+            "localized_area_display": "San Francisco, CA"
+          },
+          "venue_profile_url": "",
+          "id": "32981541"
+        },
+        "series_id": "63033656363",
+        "image_id": "63471412",
+        "is_cancelled": null,
+        "primary_venue_id": "32981541",
+        "checkout_flow": "moflo",
+        "name": "Live Jazz @AtlasCafeSF each Thurs, Fri & Saturday nights 8-10pm, never a cover charge",
+        "language": "en-us",
+        "url": "https://www.eventbrite.com/e/live-jazz-atlascafesf-each-thurs-fri-saturday-nights-8-10pm-never-a-cover-charge-tickets-63033721558",
+        "hide_start_date": false,
+        "summary": "Live Jazz each Thursday Friday & Saturday Nights 8-10pm, and Saturday afternoons 4-6pm. Never a cover charge.\nAtlas Cafe has been serving great coffee in San Francisco's Mission District since April of 1996. We provide a casual, comfortable place for folks who live in the neighborhood to gather, eat, relax and socialize. We offer a wide selection of handcrafted food items and sweet treats from local favorites. Our diverse menu includes tasty vegetarian and vegan food options. Come enjoy a Califo",
+        "is_online_event": false,
+        "eid": "63033721558",
+        "published": "2019-06-06T02:15:13Z"
+      },
+      {
+        "timezone": "America/Los_Angeles",
+        "id": "80607943529",
+        "tickets_url": "https://www.eventbrite.com/e/afro-latin-dance-party-with-two-generations-tickets-80607943529",
+        "tickets_by": "Eventbrite",
+        "primary_organizer_id": "4452542137",
+        "hide_end_date": false,
+        "start_date": "2019-12-07",
+        "end_time": "22:00",
+        "_type": "destination_event",
+        "end_date": "2019-12-07",
+        "tags": [
+          {
+            "prefix": "EventbriteSubCategory",
+            "tag": "EventbriteSubCategory/3010",
+            "display_name": "Latin"
+          },
+          {
+            "prefix": "EventbriteCategory",
+            "tag": "EventbriteCategory/103",
+            "display_name": "Music",
+            "localized": {
+              "display_name": "Music"
+            }
+          },
+          {
+            "prefix": "EventbriteFormat",
+            "tag": "EventbriteFormat/11",
+            "display_name": "Party or Social Gathering"
+          }
+        ],
+        "eventbrite_event_id": "80607943529",
+        "start_time": "18:30",
+        "primary_venue": {
+          "_type": "destination_venue",
+          "name": "Community Music Center",
+          "venue_profile_id": null,
+          "address": {
+            "city": "San Francisco",
+            "country": "US",
+            "region": "CA",
+            "longitude": "-122.41824099999997",
+            "localized_address_display": "544 Capp Street, San Francisco, CA 94110",
+            "postal_code": "94110",
+            "address_1": "544 Capp Street",
+            "latitude": "37.757939",
+            "localized_multi_line_address_display": [
+              "544 Capp Street",
+              "San Francisco, CA 94110"
+            ],
+            "localized_area_display": "San Francisco, CA"
+          },
+          "venue_profile_url": "",
+          "id": "43588197"
+        },
+        "series_id": null,
+        "image_id": "79741277",
+        "is_cancelled": null,
+        "primary_venue_id": "43588197",
+        "checkout_flow": "moflo",
+        "name": "Afro-Latin Dance Party with Two Generations",
+        "language": "en-us",
+        "url": "https://www.eventbrite.com/e/afro-latin-dance-party-with-two-generations-tickets-80607943529",
+        "hide_start_date": false,
+        "summary": "Afro-Latin Dance Party with Two Generations\n\n\nCMC's Mission District Young Musicians Program and Cuban Charanga Ensemble\n\n\n\n\n\nTwo generations of CMC ensemble musicians play smoking dance music from the Americas in a special December MAPP event! \n\n\n\n\n\n\n\nThe evening includes dance lessons, food, and drink.\n\n\n\n\n\n\n\n\n\n\n\n\n6:30 pm – 7:00pm Salsa Dance Class Lesson7:00 PM – 8:00 PM  CMC Mission District Young Musicians Program play\n\n\n\n\n\n\n8:30 - 10:00pm - CMC Cuban Charanga Ensemble playing swinging Cuba",
+        "is_online_event": false,
+        "eid": "80607943529",
+        "published": "2019-11-07T00:54:19Z"
+      },
+      {
+        "timezone": "America/Los_Angeles",
+        "id": "82675361231",
+        "tickets_url": "https://www.eventbrite.com/e/no-scrubs-90s-hip-hop-rnb-night-free-with-rsvp-tickets-82675361231",
+        "tickets_by": "Eventbrite",
+        "primary_organizer_id": "5893309401",
+        "hide_end_date": false,
+        "start_date": "2019-12-07",
+        "end_time": "02:00",
+        "_type": "destination_event",
+        "end_date": "2019-12-08",
+        "tags": [
+          {
+            "prefix": "EventbriteSubCategory",
+            "tag": "EventbriteSubCategory/3008",
+            "display_name": "Hip Hop / Rap"
+          },
+          {
+            "prefix": "EventbriteCategory",
+            "tag": "EventbriteCategory/103",
+            "display_name": "Music",
+            "localized": {
+              "display_name": "Music"
+            }
+          },
+          {
+            "prefix": "EventbriteFormat",
+            "tag": "EventbriteFormat/11",
+            "display_name": "Party or Social Gathering"
+          }
+        ],
+        "eventbrite_event_id": "82675361231",
+        "start_time": "22:00",
+        "primary_venue": {
+          "_type": "destination_venue",
+          "name": "Bar Fluxus",
+          "venue_profile_id": null,
+          "address": {
+            "city": "San Francisco",
+            "country": "US",
+            "region": "CA",
+            "longitude": "-122.40504670000001",
+            "localized_address_display": "18 Harlan Place, San Francisco, CA 94108",
+            "postal_code": "94108",
+            "address_1": "18 Harlan Place",
+            "latitude": "37.79017820000001",
+            "localized_multi_line_address_display": [
+              "18 Harlan Place",
+              "San Francisco, CA 94108"
+            ],
+            "localized_area_display": "San Francisco, CA"
+          },
+          "venue_profile_url": "",
+          "id": "43013237"
+        },
+        "series_id": null,
+        "image_id": "74658757",
+        "is_cancelled": null,
+        "primary_venue_id": "43013237",
+        "checkout_flow": "moflo",
+        "name": "No Scrubs: 90s Hip Hop & RnB Night (Free with RSVP)",
+        "language": "en-us",
+        "url": "https://www.eventbrite.com/e/no-scrubs-90s-hip-hop-rnb-night-free-with-rsvp-tickets-82675361231",
+        "hide_start_date": false,
+        "summary": "** Only 300 Free Tickets Available So Get Yours A.S.A.P. Free Tickets for a Limited Time **",
+        "is_online_event": false,
+        "eid": "82675361231",
+        "published": "2019-11-18T21:17:59Z"
+      }
+    ],
+    "aggs": {}
+  },
+  "es": [],
+  "event_search": {
+    "dates": [
+      "current_future",
+      "this_weekend"
+    ],
+    "tags": [
+      "EventbriteCategory/103"
+    ],
+    "price": "free",
+    "online_events_only": false,
+    "page_size": 20,
+    "q": "jazz",
+    "bbox": "-122.5605,37.6772,-122.3671,37.8085",
+    "page": 1
+  }
+}
