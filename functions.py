@@ -76,7 +76,7 @@ def compress_evt_list(events):
     custom_events = []
 
     for e in events:
-        date, time = e['start']['local'].split("T")
+        # date, time = e['start']['local'].split("T")
         custom_events.append({'name': e['name']['text'],
                             'eventbrite_id': e['id'],
                             'event_url': e['url'],
@@ -87,23 +87,28 @@ def compress_evt_list(events):
                             'marker': {'name': e['name']['text'], 'coords': {
                             'lat': e['venue']['latitude'],
                             'lng': e['venue']['longitude']}},
+                            'coords': {
+                            'lat': e['venue']['latitude'],
+                            'lng': e['venue']['longitude']},
+                            # 'img': e['logo']['url'],
                             })
     return custom_events
 
-    def evt_date_sort(events):
-        """Group Event Results by Date"""
-        date_groups = {}
-        for event in events:
-            date, time = event[date].split("T")
-            date_groups[date] = date_groups.get(date, [])
-            date_groups[date].append(event)
+def evt_date_sort(events):
+    """Group Event Results by Date"""
+    date_groups = {}
+    for event in events:
+        date, time = event['date'].split("T")
+        date_groups[date] = date_groups.get(date, [])
+        date_groups[date].append(event)
 
-        return date_groups
+    return date_groups
 
 def postman_search(query):
     url = "https://www.eventbrite.com/api/v3/events/search/"
 
-    querystring = {"price":"free","sort_by":"date","expand":"venue"}
+    querystring = {"price":"free","sort_by":"date","expand":"venue","include_all_series_instances":"false",
+                   "categories":"103,110,113,105,104,108,107,102,109,116,106,117,118,119,199"}
 
     payload = json.dumps(query)
 
@@ -134,6 +139,8 @@ def postman_search(query):
             status = "OKAY"
             data = response.json()
             events = data['events']
+            with open('sub-evts.json', 'w') as outfile:
+                json.dump(data, outfile)
 
     else:
         status = "SUBSTITUTE RESULTS"
@@ -142,9 +149,15 @@ def postman_search(query):
 
     custom_events = compress_evt_list(events)
     markers = [event['marker'] for event in custom_events]
-    results = {'status': status, 'events': custom_events, 'markers': markers}
+    by_date = evt_date_sort(custom_events)
+    results = {'events': custom_events, 'markers': markers, 'sorted': by_date}
 
     return results
+
+def debug_print(problem):
+        print("\n")
+        print(problem)
+        print("\n")
 
 
 

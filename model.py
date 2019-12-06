@@ -63,6 +63,16 @@ class Event(db.Model):
         """Provide helpful representation when printed!"""
         return f"< {self.event_name} >"
 
+    def to_dict(self):
+        return {'event_id': self.event_id,
+                'eventbrite_id': self.eventbrite_id,
+                'event_name': self.event_name,
+                'event_url': self.event_url,
+                'location': self.location,
+                'date': self.date,
+                'category': self.category,
+                'description': self.description}
+
 
 class UserEvent(db.Model):
     """Table to handle relationship of user saving of events"""

@@ -4,6 +4,18 @@ class ResultMap extends React.Component {
         this.googleMapRef = React.createRef();
         }
 
+        // {'name': event.name,
+        // 'eventbrite_id': event.id,
+        // 'event_url': event.url,
+        // 'date': event.startdatetime,
+        // 'category': event.cateogry,
+        // 'description': event.description,
+        // 'location': event.address,
+        // 'coords': {
+        //      'lat': e['venue']['latitude'],
+        //      'lng': e['venue']['longitude']},
+        // }
+
     componentDidMount() {
         const googleMapScript = document.createElement('script')
         googleMapScript.src =
@@ -12,8 +24,8 @@ class ResultMap extends React.Component {
 
         googleMapScript.addEventListener("load", () => {
             this.googleMap = this.initMap();
-            this.createMarkers();
         });
+        console.log(this.props.results)
     }
 
     initMap = () =>
@@ -26,22 +38,23 @@ class ResultMap extends React.Component {
         });
 
     createMarkers = () => {
-            console.log(this.props.places)
             let locations = [];
-            for (const place of this.props.places){
+            for (const place of this.props.results){
                 let marker = place
                 marker.coords.lat = parseFloat(marker.coords.lat);
                 marker.coords.lng = parseFloat(marker.coords.lng);
                 locations.push(marker);
             };
-            // console.log(locations)
+            this.googleMap.panTo(locations[0].coords)
 
             const markers = [];
             for (const location of locations) {
+                // console.log(location.description);
                 markers.push(new window.google.maps.Marker({
                     position: location.coords,
                     title: location.name,
                     map: this.googleMap,
+                    info: location.description,
                     icon: {
                         url: '/static/img/marker.svg',
                         scaledSize: {
@@ -56,8 +69,7 @@ class ResultMap extends React.Component {
                 const markerInfo = (`
                   <h3>${marker.title}</h3>
                   <p>
-                    Located at: <code>${marker.position.lat()}</code>,
-                    <code>${marker.position.lng()}</code>
+                    ${marker.info}
                   </p>
                 `);
 
@@ -68,6 +80,10 @@ class ResultMap extends React.Component {
 
                 marker.addListener("click", () => {
                     infoWindow.open(this.googleMap, marker);
+                });
+
+                marker.addListener("dblclick", () => {
+                    infoWindow.close(this.googleMap, marker);
                 });
 
             }
@@ -84,25 +100,8 @@ class ResultMap extends React.Component {
             <div
               id="map"
               ref={this.googleMapRef}
-              style={{ width: '500px', height: '300px' }}
+              style={{ width: '50vw', height: '100vh' }}
             />
-            )
-    }
-}
-
-class EventTile extends React.Component {
-    constructor(props){
-        super(props)
-    }
-
-    render(){
-        const saveButton = <SaveButton event={this.props.event_data} user={this.props.user} />
-        return(
-            <div className="event-tile">
-                <h2>{this.props.date}</h2>
-                <a href={this.props.url}>{this.props.event_name}</a>
-                {this.props.user && saveButton}
-            </div>
             )
     }
 }
@@ -116,7 +115,8 @@ class SaveButton extends React.Component {
     }
 
     checkSaved() {
-    let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user, };
+    let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user,
+                "checkSave": true};
     $.get("/saved-events.json", data, (response) => {
         this.setState({ saved: response.saved });
         });
@@ -153,38 +153,64 @@ class SaveButton extends React.Component {
         }
     }
 
+const DateHeader = (props) => {
+    return <h2>{props.date}</h2>
+}
 
 class EventList extends React.Component {
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        const resultList = [];
+        const dates = Object.keys(this.props.results);
+        const events = this.props.results;
+        const user = this.props.user;
+        for (const date of dates){
+        resultList.push(
+            <div>
+            <DateHeader date={date} />
+            <TileList results={events[date]} user={user} />
+            </div>)
+        }
+    return(<div>{resultList}</div>)
+    }
+}
+
+class EventTile extends React.Component {
     constructor(props){
         super(props)
     }
 
     render(){
+        // const saveButton = <SaveButton event={this.props.event_data} user={this.props.user} />
+        return(
+            <div className="event-tile">
+                <h2>{this.props.date}</h2>
+                <a href={this.props.url}>{this.props.event_name}</a>
+                {this.props.user && <SaveButton event={this.props.event_data} user={this.props.user} />}
+            </div>
+            )
+    }
+}
+
+
+function TileList(props) {
         const resultList = [];
-        if (this.props.results) {
-            for (const currentResult of this.props.results) {
-                const date = new Date(currentResult.date);
-                const dateStr = date.toDateString()
+        for (const currentResult of props.results) {
                 resultList.push(
                     <EventTile key={currentResult.eventbrite_id}
-                    date={dateStr}
                     url={currentResult.event_url}
                     event_name={currentResult.name}
                     event_data={currentResult}
-                    user={this.props.user}
+                    user={props.user}
                     />
                 );
-            }}
-
-        const searchStatus = <h1><strong>Substitute Results</strong></h1>
-
-        return(
-            <div id="results">
-            <h1><strong>{this.props.status}</strong></h1>
-            {resultList}
-            </div>)
+        return <div>{resultList}</div>
     }
 }
+
 
 class SearchForm extends React.Component {
     constructor(props){
@@ -240,11 +266,15 @@ class SearchForm extends React.Component {
                 </label>
                 <label>
                     When:
-                    <input
+                    <select
                     name="when"
-                    type="date"
                     value={this.state.when}
-                    onChange={this.handleInput} />
+                    onChange={this.handleInput}>
+                        <option value="today">Today</option>
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="this_weekend">This Weekend</option>
+                        <option value="next_week">Next Week</option>
+                    </select>
                 </label>
                 <input type='submit' value="Search" />
             </form>
@@ -258,15 +288,16 @@ class PageContainer extends React.Component {
         super(props);
 
         this.state = { events: [],
+                       results: false,
                        markers: [],
                        status: '',
+                       dates: {},
                        user: null }
         this.updateResults = this.updateResults.bind(this);
         this.searchEvents = this.searchEvents.bind(this);
     }
 
     searchEvents(query) {
-        console.log(query)
         $.get('/test.json', query, this.updateResults)
     }
 
@@ -276,29 +307,28 @@ class PageContainer extends React.Component {
         const user = response.user_id
         const status = response.status;
         this.setState({ events: events,
+                        results: true,
                         markers: markers,
                         status: status,
+                        dates: response.sorted,
                         user: user });
-        console.log('updateResults: ' + this.state.markers)
     }
 
-    // componentDidMount() {
-    //     this.getResults();
-    // }
-
     render(){
-        const searchResults = <EventList status={this.state.status} results={this.state.events}
+        const searchResults = <EventList status={this.state.status} results={this.state.dates}
                        user={this.state.user} />
-        const resultMap = <ResultMap places={this.state.markers} />
+        const resultMap = <ResultMap places={this.state.markers} results={this.state.events} />
 
         return(
             <div>
+            <section>
             <SearchForm searchEvents={this.searchEvents}  />
-            <ResultMap places={this.state.markers} />
-            {this.state.events !== [] && searchResults}
+            <ResultMap places={this.state.markers} results={this.state.events} />
+            </section>
+            {this.state.results && searchResults}
             </div>
             )
     }
 }
 
-ReactDOM.render(<PageContainer />, document.getElementById('container'))
+ReactDOM.render(<PageContainer />, document.getElementById('results'))

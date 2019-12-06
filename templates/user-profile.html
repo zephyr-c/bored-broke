@@ -3,13 +3,14 @@
 {% block content %}
 
 <h1>User Profile</h1>
+<input type="hidden" id="user" value='{{ user.user_id }}'>
 
 <img src="{{ user.avatar }}">
 
 Username: {{ user.username }}
 Name: {{ user.fname }}
 Zip: {{ user.location }}
-<table>
+<!-- <table>
 <tr>
     <th>Interests</th>
 </tr>
@@ -17,8 +18,9 @@ Zip: {{ user.location }}
     <td>Music</td>
     <td><input type='checkbox' name='music' value="103"></td>
 </tr>
-</table>
+</table> -->
 
 <h3><a href="/saved-events-{{ user.user_id }}"> See Saved Events </a></h3>
+<div id='events'></div>
 
 {% endblock %}

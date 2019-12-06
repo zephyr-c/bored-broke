@@ -41,12 +41,12 @@ def process_login():
     profile = find_by_username(username)
 
     if not profile or not profile.check_password(password):
-        flash("Username or Password Incorrect")
+        flash("Username or Password Incorrect", "danger")
         return redirect("/")
     else:
         login_success(profile.user_id)
         # session['user_id'] = profile.user_id
-        flash(f"Welcome back {profile.fname}!")
+        flash(f"Welcome back {profile.fname}!", "success")
         return redirect("/event-search")
 
 
@@ -72,7 +72,7 @@ def process_registration():
     user_info = dict(db.session.query(User.username, User.email).all())
     if (new_info['username'] in user_info.keys()
        or new_info['email'] in user_info.values()):
-        flash("User Already Exists")
+        flash("User Already Exists", "warning")
         return redirect('/register')
     else:
         new_user = User(username=new_info['username'],
@@ -87,7 +87,7 @@ def process_registration():
         db.session.add(new_user)
         db.session.commit()
         # session['user_id'] = new_user.user_id
-        flash("Success!")
+        flash("Success!", "success")
         return redirect('/')
 
 
@@ -101,70 +101,41 @@ def user_profile(user_id):
 @app.route("/saved-events-<user_id>")
 def show_saved_events(user_id):
     """show list of user's saved events"""
-    saved = UserEvent.query.filter(UserEvent.user_id == user_id, UserEvent.event.date >= datetime.datetime.now()).all()
+    today = datetime.datetime.now()
+    all_saved = UserEvent.query.filter(UserEvent.user_id == user_id).all()
+    show_saved = [event for event in all_saved if event.event.date >= today]
 
-    return render_template('saved-events.html', saved=saved)
-
-# @app.route("/saved-events.json", methods=['GET'])
-# def get_user_events():
-#     saved_events = UserEvent.query.filter_by(user_id = user_id)
-#     return jsonify({"saved_events": saved_events})
+    return render_template('saved-events.html', saved=show_saved)
 
 
 @app.route("/event-search")
 def show_search_form():
-    """show event search form"""
-    return render_template('event-search.html')
+    """show event search"""
+    return render_template('react-search.html')
 
+@app.route("/event-search.json")
+def search_events():
+    """search for free events, return JSON results"""
+    what = request.args.get('what')
+    where = request.args.get("where")
+    when = request.args.get('when', datetime.datetime.now())
 
-@app.route("/event-results")
-def find_events():
-    """Search for and display free events from EventBrite"""
-
-    query = request.args.get('what')
-    location = request.args.get('where')
-    # distance = request.args.get('distance')
-    # measurement = request.args.get('measurement')
-    # sort = request.args.get('sort')
-
-    # distance = distance + measurement
-
-    payload = {'q': query,
-               'price': 'free',
-               'location.address': location,
-               # 'location.within': distance,
-               'sort_by': 'date',
-               'expand': 'venue',
+    payload = {'q': what,
+               'location.address': where,
+               'start_date.keyword': when
                }
-    retry_count = 0
-    while retry_count < 5:
-        response = requests.get(EVENTBRITE_URL + "events/search/",
-                                params=payload,
-                                headers=HEADERS)
 
-        if response.ok:
-            status = "OKAY"
-            data = response.json()
-            events = data['events']
-            with open('sub-evts.json', 'w') as outfile:
-                json.dump(data, outfile)
-            break
-        else:
-            print(response.status_code)
-            print("trying again")
-            retry_count += 1
-            continue
+    results = postman_search(payload)
 
-    if retry_count >= 5:
-        status = "ERROR"
-        sub_data = json.load(open('sub_data/sf-sub-evts.json'))
-        events = sub_data['events']
+    if not session.get('user'):
+        user_id = None
+    else:
+        user_id = session['user']['user_id']
 
-    custom_events = compress_evt_list(events)
-
-    return render_template("search-results.html",
-                            results=custom_events,
-                            status=status)
+    return jsonify(status=results['status'],
+                   results=results['events'],
+                   markers=results['markers'],
+                   user_id=user_id)
 
 
 @app.route("/save-event", methods=["POST"])
@@ -177,9 +148,7 @@ def save_event():
         response = requests.get(EVENTBRITE_URL + "events/" + eventbrite_id,
                                 headers=HEADERS)
         data = response.json()
-        # print("\n")
-        # print(data)
-        # print("\n")
+
         new_event = Event(eventbrite_id=eventbrite_id,
                           event_name=data['name']['text'],
                           event_url=data['url'],
@@ -201,11 +170,18 @@ def check_saved():
     """Check if user already saved event"""
     evt_id = request.args.get('evtId')
     user = int(request.args.get('userId'))
-    all_saved = set(db.session.query(UserEvent.eventbrite_id, UserEvent.user_id).all())
+    check_save = request.args.get('checkSave', False)
 
-    status = (evt_id, user) in all_saved
+    if check_save == True:
+        all_saved = set(db.session.query(UserEvent.eventbrite_id, UserEvent.user_id).all())
+        status = (evt_id, user) in all_saved
 
-    return jsonify(saved=status)
+    else:
+        today = datetime.datetime.now()
+        all_saved = UserEvent.query.filter(UserEvent.user_id == user).all()
+        saved = [event.event.to_dict() for event in all_saved if event.event.date >= today]
+
+    return jsonify(saved=saved)
 
 
 
@@ -224,33 +200,43 @@ def get_random_activity():
 
 @app.route("/test.json", methods=["GET"])
 def serve_test_results():
-    arg_dict = request.args
-    print(arg_dict)
-    what = request.args.get('what')
-    print("What: ", what)
+    test_results = {"o": json.load(open("sub_data/orlando-foods.json")),
+     "p": json.load(open("sub_data/phil-sub-music.json")),
+     "sf": json.load(open("sub_data/sf-sub-evts.json"))}
+
     where = request.args.get("where")
-    print("Where: ", where)
-    when = request.args.get('when', datetime.datetime.now())
-    print("When: ", when)
 
-    payload = {'q': what,
-               'location.address': where,
-               }
+    data = test_results[where]
 
-    results = postman_search(payload)
+    # what = request.args.get('what')
+    # where = request.args.get("where")
+    # when = request.args.get('when', "today")
 
-    # markers = [event['marker'] for event in results['events']]
+    # payload = {'q': what,
+    #            'location.address': where,
+    #            'start_date.keyword': when
+    #            }
+
+    # results = postman_search(payload)
+
     if not session.get('user'):
         user_id = None
     else:
         user_id = session['user']['user_id']
 
-    # print(results['markers'])
+    custom_events = compress_evt_list(data["events"])
+    markers = [event['marker'] for event in custom_events]
+    by_date = evt_date_sort(custom_events)
+    results = {'events': custom_events, 'markers': markers, 'sorted': by_date}
 
-    return jsonify(status=results['status'],
-                   results=results['events'],
+    # debug_print(by_date)
+
+    return jsonify(results=results['events'],
                    markers=results['markers'],
-                   user_id=user_id)
+                   sorted=results['sorted'],
+                   user_id=user_id
+                   )
+
 
 @app.route("/test")
 def show_test_page():
