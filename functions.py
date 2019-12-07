@@ -150,7 +150,7 @@ def postman_search(query):
     custom_events = compress_evt_list(events)
     markers = [event['marker'] for event in custom_events]
     by_date = evt_date_sort(custom_events)
-    results = {'events': custom_events, 'markers': markers, 'sorted': by_date}
+    results = {'events': custom_events, 'markers': markers, 'sorted': by_date, 'status': "Yay!"}
 
     return results
 

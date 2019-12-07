@@ -103,7 +103,7 @@ def show_saved_events(user_id):
     """show list of user's saved events"""
     today = datetime.datetime.now()
     all_saved = UserEvent.query.filter(UserEvent.user_id == user_id).all()
-    show_saved = [event for event in all_saved if event.event.date >= today]
+    show_saved = [event for event in all_saved if event.event.date >= datetime.datetime.now()]
 
     return render_template('saved-events.html', saved=show_saved)
 
@@ -135,6 +135,7 @@ def search_events():
     return jsonify(status=results['status'],
                    results=results['events'],
                    markers=results['markers'],
+                   sorted=results['sorted'],
                    user_id=user_id)
 
 
@@ -183,6 +184,9 @@ def check_saved():
 
     return jsonify(saved=saved)
 
+@app.route("/activities")
+def show_activities():
+    return render_template('activities.html')
 
 
 @app.route("/activities.json", methods=["GET"])

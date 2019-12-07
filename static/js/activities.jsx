@@ -1,16 +1,16 @@
-class ActivityTile extends React.Component {
-    constructor(props){
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className="tile">
-            <h1>{this.props.suggestion}</h1>
-            <h2>{this.props.description}</h2>
+const ActivityTile = (props) => {
+    return (
+            <div className="container justify-content-center align-items-center">
+            <h1 className="display-4">{props.suggestion}</h1>
+            <p className="lead">{props.description}</p>
             </div>
             );
-    }
+}
+
+const ChoiceButton = (props) => {
+    return(
+            <button onClick={props.function}>{props.name}</button>
+        )
 }
 
 
@@ -36,13 +36,13 @@ newActivity(response) {
 render() {
 
     return(
-        <div>
+        <div className="jumbotron text-center">
         <ActivityTile suggestion={this.state.activity}
         description={this.state.description} newActivity={this.newActivity} />
-        <button onClick={this.getActivity}>New Choice</button>
+        <ChoiceButton function={this.getActivity} name="New Choice Test" />
         </div>)
 }
 
 }
 
-ReactDOM.render(<ActivityPageContainer />, document.getElementById('container'))
+ReactDOM.render(<ActivityPageContainer />, document.getElementById('root'))
