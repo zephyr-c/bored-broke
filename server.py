@@ -144,11 +144,13 @@ def save_event():
     """Save event to user saved events list"""
 
     eventbrite_id = request.form.get('evtID')
+    print("id: " + eventbrite_id)
 
     if not Event.query.filter(Event.eventbrite_id == eventbrite_id).first():
         response = requests.get(EVENTBRITE_URL + "events/" + eventbrite_id,
                                 headers=HEADERS)
         data = response.json()
+        debug_print(data)
 
         new_event = Event(eventbrite_id=eventbrite_id,
                           event_name=data['name']['text'],
@@ -172,17 +174,22 @@ def check_saved():
     evt_id = request.args.get('evtId')
     user = int(request.args.get('userId'))
     check_save = request.args.get('checkSave', False)
+    print(type(check_save))
 
-    if check_save == True:
+    if check_save == "true":
         all_saved = set(db.session.query(UserEvent.eventbrite_id, UserEvent.user_id).all())
         status = (evt_id, user) in all_saved
+
+        return jsonify(status=status)
+
 
     else:
         today = datetime.datetime.now()
         all_saved = UserEvent.query.filter(UserEvent.user_id == user).all()
         saved = [event.event.to_dict() for event in all_saved if event.event.date >= today]
 
-    return jsonify(saved=saved)
+        return jsonify(saved=saved)
+
 
 @app.route("/activities")
 def show_activities():

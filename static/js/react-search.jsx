@@ -109,7 +109,8 @@ class ResultMap extends React.Component {
 
 class SaveButton extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
+        this.evtID = this.props.event.eventbrite_id
         this.state = { saved: false }
         this.checkSaved = this.checkSaved.bind(this)
         this.saveEvent = this.saveEvent.bind(this)
@@ -119,12 +120,14 @@ class SaveButton extends React.Component {
     let data = {"evtId": this.props.event.eventbrite_id, "userId": this.props.user,
                 "checkSave": true};
     $.get("/saved-events.json", data, (response) => {
-        this.setState({ saved: response.saved });
+        this.setState({ saved: response.status });
         });
     }
 
-    saveEvent(evt) {
-        $.post("/save-event", {"evtID": evt.target.id}, (response) =>
+    saveEvent(e) {
+        const tgt = $(e.target);
+        tgt.addClass("fa-spin");
+        $.post("/save-event", {"evtID": this.evtID}, (response) =>
             response.status === 'success' ? this.setState({ saved: true }) :
             alert("Something Went Wrong"));
     }
@@ -136,15 +139,11 @@ class SaveButton extends React.Component {
 
 
     render(){
-        const notSaved = <button onClick={ this.saveEvent }
-                className="save-btn"
-                id={ this.props.event.eventbrite_id }
-                name={ this.props.event.eventbrite_id }>Save Event</button>;
+        const notSaved = <a className="btn" id={ this.evtID } href="#"
+                        onClick={this.saveEvent}><i className="far fa-heart"></i></a>;
 
-        const isSaved = <button className="save-btn"
-                id={ this.props.event.eventbrite_id }
-                name={ this.props.event.eventbrite_id }
-                disabled={true}>Event Saved!</button>;
+        const isSaved = <a className="btn" id={this.evtID} href="#"
+                        disabled={true}><i className="fas fa-heart"></i></a>;
 
         return(
             <span>
