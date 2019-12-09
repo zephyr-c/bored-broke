@@ -1,13 +1,43 @@
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>  Bored </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/signin.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/css/strap-theme.css">
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://kit.fontawesome.com/4d7d0923c5.js" crossorigin="anonymous"></script>
+  </head>
+<body class="text-center signin">
+    <video autoplay muted loop id="backgroundVid">
+  <source src="/static/img/MP4/Up.mp4" type="video/mp4">
+</video>
+<div class ="text-center container" id="signin">
 
-<h1>Welcome</h1>
-
-<form action="/login" method="POST">
-    User Name: <input type="text" name="username"><br>
-    Password: <input type="password" name="password"><br>
-    <input type="submit" value="Log In"> <button type="button" id="register">
-        <a href="/register">Register</a></button>
+<form class="form-signin" action="/login" method="POST">
+    <h1>Welcome</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
+    <label for="userName" class="sr-only">User Name</label>
+    <input type="text" id="userName" name="username" class="form-control" placeholder="User Name" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Log In">
+    <p class="mt-5 mb-2 text-muted"><a href="/register">Register</a></p>
+    <p class="mb-3 text-muted"><a href="/event-search">Continue as Guest</a></p>
 </form>
-
-{% endblock %}
+</div>
+<script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

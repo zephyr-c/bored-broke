@@ -2,6 +2,24 @@
 
 {% block content %}
 
+<div class="card mb-5" style="max-width: 800px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{ user.avatar }}" class="card-img" alt="...">
+    </div>
+    <div class="col-md-5">
+      <div class="card-body">
+        <h3 class="card-title">{{ user.username }} Profile</h3>
+        <p class="card-text">
+            <lead>Name: {{ user.fname }} </lead><br>
+            <lead>Zip: {{ user.location }} </lead>
+        </p>
+        <p class="card-text"><small class="text-muted"><a href="/saved-events-{{ user.user_id }}"> See Saved Events </a></small></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <h1>User Profile</h1>
 <input type="hidden" id="user" value='{{ user.user_id }}'>
 
@@ -20,7 +38,7 @@ Zip: {{ user.location }}
 </tr>
 </table> -->
 
-<h3><a href="/saved-events-{{ user.user_id }}"> See Saved Events </a></h3>
+<h3></h3>
 <div id='events'></div>
 
 {% endblock %}

@@ -43,10 +43,11 @@ def load_activities():
 
     for row in open("activities.txt"):
         row = row.rstrip().split("|")
-        activity, description = row
+        activity, description, img = row
 
         activity = Activity(activity=activity,
-                            description=description,)
+                            description=description,
+                            img=img,)
 
         db.session.add(activity)
     db.session.commit()

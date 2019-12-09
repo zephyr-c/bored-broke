@@ -124,6 +124,7 @@ class Activity(db.Model):
     activity_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     activity = db.Column(db.String)
     description = db.Column(db.String)
+    img = db.Column(db.String)
 
 ###############################################################################
 # Helper Functions

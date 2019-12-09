@@ -3,6 +3,8 @@ from flask import Flask, session, jsonify
 import requests
 import os
 import json
+import datetime
+from dateutil.parser import parse
 from model import *
 
 EVENTBRITE_TOKEN = os.environ.get('EVENTBRITE_TOKEN')
@@ -17,9 +19,11 @@ HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN,
 def login_success(user_id):
     """Adds user data to flask session after successful log in/password check"""
     session['user'] = {}
+    u_obj = User.query.filter(User.user_id == user_id).first()
     saved_events = UserEvent.query.filter_by(user_id = user_id).all()
     user = session['user']
     user['user_id'] = user_id
+    user['name'] = u_obj.fname
     user['saved'] = [event.eventbrite_id for event in saved_events]
 
 def find_by_username(username):
@@ -76,29 +80,32 @@ def compress_evt_list(events):
     custom_events = []
 
     for e in events:
-        # date, time = e['start']['local'].split("T")
-        custom_events.append({'name': e['name']['text'],
-                            'eventbrite_id': e['id'],
-                            'event_url': e['url'],
-                            'date': e['start']['local'],
-                            'category': e['category_id'],
-                            'description': e['summary'],
-                            'location': e['venue']['address']['localized_address_display'],
-                            'marker': {'name': e['name']['text'], 'coords': {
-                            'lat': e['venue']['latitude'],
-                            'lng': e['venue']['longitude']}},
-                            'coords': {
-                            'lat': e['venue']['latitude'],
-                            'lng': e['venue']['longitude']},
-                            # 'img': e['logo']['url'],
-                            })
+        if e['is_free'] == 'false':
+            continue
+        else:
+            custom_events.append({'name': e['name']['text'],
+                                'eventbrite_id': e['id'],
+                                'event_url': e['url'],
+                                'date': e['start']['local'],
+                                'category': e['category_id'],
+                                'description': e['summary'],
+                                'location': e['venue']['address']['localized_address_display'],
+                                'marker': {'name': e['name']['text'], 'coords': {
+                                'lat': e['venue']['latitude'],
+                                'lng': e['venue']['longitude']}},
+                                'coords': {
+                                'lat': e['venue']['latitude'],
+                                'lng': e['venue']['longitude']},
+                                # 'img': e.get(['logo']['url'], )
+                                })
     return custom_events
 
 def evt_date_sort(events):
     """Group Event Results by Date"""
     date_groups = {}
     for event in events:
-        date, time = event['date'].split("T")
+        d = parse(event['date'])
+        date = d.strftime("%a %B %d")
         date_groups[date] = date_groups.get(date, [])
         date_groups[date].append(event)
 

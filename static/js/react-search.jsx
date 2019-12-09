@@ -204,6 +204,9 @@ class EventTile extends React.Component {
                 <h2>{this.props.date}</h2>
                 <a href={this.props.url}>{this.props.event_name}</a>
                 {this.props.user && <SaveButton event={this.props.event_data} user={this.props.user} />}
+                 <div>
+                    <p>{this.props.event_data.description}</p>
+                </div>
             </div>
             )
     }

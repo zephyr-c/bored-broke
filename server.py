@@ -122,7 +122,9 @@ def search_events():
 
     payload = {'q': what,
                'location.address': where,
-               'start_date.keyword': when
+               'start_date.keyword': when,
+               'price': 'free',
+               'sort_by': 'date',
                }
 
     results = postman_search(payload)
@@ -204,9 +206,11 @@ def get_random_activity():
     print(activity)
     description = suggestion.description
     print(description)
+    img = suggestion.img
 
     return jsonify({"activity": activity,
-                    "description": description})
+                    "description": description,
+                    "img": img})
 
 
 @app.route("/test.json", methods=["GET"])
