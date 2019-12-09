@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<ul>
+
+<div class="card border-primary mt-2">
+  <div class="card-header">
+    <h3>My Saved Events</h3>
+  </div>
+  <div class="card-body">
     {% for save in saved %}
-    <li>
-        <a href="{{ save.event.event_url }}" target="_blank">{{ save.event.event_name }}</a>
-    </li>
+    <h5 class="card-title"><span class="mr-2"><i class="fas fa-thumbtack"></i></span><a href="{{ save.event.event_url }}" target="_blank">{{ save.event.event_name }}</a></h5>
+    <p class="card-text text-muted info-text ml-4">{{ save.event.date.strftime('%a %B %d') }}</p>
+<!--     <a href="#" class="btn btn-primary">Go somewhere</a> -->
     {% endfor %}
-</ul>
+  </div>
+</div>
 
 {% endblock %}

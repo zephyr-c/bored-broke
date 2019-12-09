@@ -86,9 +86,9 @@ def process_registration():
         new_user.set_password(new_info['password'])
         db.session.add(new_user)
         db.session.commit()
-        # session['user_id'] = new_user.user_id
+        session['user']['user_id'] = new_user.user_id
         flash("Success!", "success")
-        return redirect('/')
+        return redirect('/event-search')
 
 
 @app.route("/user-profile-<user_id>")
@@ -264,6 +264,6 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
     connect_to_db(app)
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(port=5000, host='0.0.0.0')

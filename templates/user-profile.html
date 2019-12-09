@@ -2,41 +2,23 @@
 
 {% block content %}
 
-<div class="card mb-5" style="max-width: 800px;">
+<div class="d-flex justify-content-center">
   <div class="row no-gutters">
     <div class="col-md-4">
-      <img src="{{ user.avatar }}" class="card-img" alt="...">
+      <img src="{{ user.avatar }}" class="card-img m-3" alt="...">
     </div>
     <div class="col-md-5">
       <div class="card-body">
-        <h3 class="card-title">{{ user.username }} Profile</h3>
-        <p class="card-text">
-            <lead>Name: {{ user.fname }} </lead><br>
+        <h3 class="card-title text-right">{{ user.fname }}'s Profile</h3>
+        <p class="card-text text-right">
+            <lead>Username: {{ user.username }} </lead><br>
             <lead>Zip: {{ user.location }} </lead>
         </p>
-        <p class="card-text"><small class="text-muted"><a href="/saved-events-{{ user.user_id }}"> See Saved Events </a></small></p>
+        <p class="card-text text-right"><small class="text-muted"><a href="/saved-events-{{ user.user_id }}"> See Saved Events </a></small></p>
       </div>
     </div>
   </div>
 </div>
-
-<h1>User Profile</h1>
-<input type="hidden" id="user" value='{{ user.user_id }}'>
-
-<img src="{{ user.avatar }}">
-
-Username: {{ user.username }}
-Name: {{ user.fname }}
-Zip: {{ user.location }}
-<!-- <table>
-<tr>
-    <th>Interests</th>
-</tr>
-<tr>
-    <td>Music</td>
-    <td><input type='checkbox' name='music' value="103"></td>
-</tr>
-</table> -->
 
 <h3></h3>
 <div id='events'></div>

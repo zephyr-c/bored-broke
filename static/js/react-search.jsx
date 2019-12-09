@@ -49,12 +49,15 @@ class ResultMap extends React.Component {
 
             const markers = [];
             for (const location of locations) {
-                // console.log(location.description);
+                let d = new Date(location.date);
+                let date = d.toDateString()
                 markers.push(new window.google.maps.Marker({
                     position: location.coords,
                     title: location.name,
                     map: this.googleMap,
                     info: location.description,
+                    address: location.location,
+                    date: date,
                     icon: {
                         url: '/static/img/marker.svg',
                         scaledSize: {
@@ -67,15 +70,20 @@ class ResultMap extends React.Component {
 
             for (const marker of markers) {
                 const markerInfo = (`
-                  <h3>${marker.title}</h3>
+                <div class="overflow-auto">
+                  <h5>${marker.title}</h5>
+                  <p class="text-muted">${marker.date}</p>
+                  <p class="text-muted">${marker.address}</p>
+                  <hr />
                   <p>
                     ${marker.info}
                   </p>
+                  </div>
                 `);
 
                 const infoWindow = new google.maps.InfoWindow({
                     content: markerInfo,
-                    maxWidth: 200
+                    maxWidth: 400
                 });
 
                 marker.addListener("click", () => {
@@ -99,7 +107,7 @@ class ResultMap extends React.Component {
         return (
             <div
               id="map"
-              className="w-100 h-100"
+              className="w-100 h-100 border border-primary border-3"
               ref={this.googleMapRef}
               // style=
             />
@@ -165,7 +173,7 @@ class Results extends React.Component {
             let items = obj[1];
             resList.push(<DateBox date={header} events={items} user={this.props.user} />);
         }
-        return <div className="d-inline-block overflow-auto list-group list-group-flush">{resList}</div>
+        return <div className="overflow-auto list-group list-group-flush">{resList}</div>
     }
 }
 
@@ -202,7 +210,7 @@ class EventTile extends React.Component {
         return(
             <div className="event-tile">
                 <h2>{this.props.date}</h2>
-                <a href={this.props.url}>{this.props.event_name}</a>
+                <a href={this.props.url} target="_blank">{this.props.event_name}</a>
                 {this.props.user && <SaveButton event={this.props.event_data} user={this.props.user} />}
                  <div>
                     <p>{this.props.event_data.description}</p>
@@ -249,7 +257,7 @@ class SearchForm extends React.Component {
 
     render(){
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form className="pt-3 pb-2" onSubmit={this.handleSubmit}>
                 <label>
                     What:
                     <input
