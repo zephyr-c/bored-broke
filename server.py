@@ -86,9 +86,8 @@ def process_registration():
         new_user.set_password(new_info['password'])
         db.session.add(new_user)
         db.session.commit()
-        session['user']['user_id'] = new_user.user_id
         flash("Success!", "success")
-        return redirect('/event-search')
+        return redirect('/')
 
 
 @app.route("/user-profile-<user_id>")
@@ -211,51 +210,6 @@ def get_random_activity():
     return jsonify({"activity": activity,
                     "description": description,
                     "img": img})
-
-
-@app.route("/test.json", methods=["GET"])
-def serve_test_results():
-    test_results = {"o": json.load(open("sub_data/orlando-foods.json")),
-     "p": json.load(open("sub_data/phil-sub-music.json")),
-     "sf": json.load(open("sub_data/sf-sub-evts.json"))}
-
-    where = request.args.get("where")
-
-    data = test_results[where]
-
-    # what = request.args.get('what')
-    # where = request.args.get("where")
-    # when = request.args.get('when', "today")
-
-    # payload = {'q': what,
-    #            'location.address': where,
-    #            'start_date.keyword': when
-    #            }
-
-    # results = postman_search(payload)
-
-    if not session.get('user'):
-        user_id = None
-    else:
-        user_id = session['user']['user_id']
-
-    custom_events = compress_evt_list(data["events"])
-    markers = [event['marker'] for event in custom_events]
-    by_date = evt_date_sort(custom_events)
-    results = {'events': custom_events, 'markers': markers, 'sorted': by_date}
-
-    # debug_print(by_date)
-
-    return jsonify(results=results['events'],
-                   markers=results['markers'],
-                   sorted=results['sorted'],
-                   user_id=user_id
-                   )
-
-
-@app.route("/test")
-def show_test_page():
-    return render_template("test-page.html")
 
 
 

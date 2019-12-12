@@ -109,7 +109,6 @@ class ResultMap extends React.Component {
               id="map"
               className="w-100 h-100 border border-primary border-3"
               ref={this.googleMapRef}
-              // style=
             />
             )
     }

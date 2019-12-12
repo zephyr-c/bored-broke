@@ -27,52 +27,9 @@ def login_success(user_id):
     user['saved'] = [event.eventbrite_id for event in saved_events]
 
 def find_by_username(username):
-    """Helper query to search db by username"""
-    return User.query.filter(User.username == username).first()
+    user = User.query.filter(User.username == username).first()
 
-def search_events(payload):
-    """Search EventBrite API"""
-    retry_count = 0
-    while retry_count < 5:
-        response = requests.request("GET", EVENTBRITE_URL + "events/search/",
-                                data=payload,
-                                headers=HEADERS)
-
-        if response.ok:
-            status = "OKAY"
-            data = response.json()
-            events = data['events']
-            with open('sub-evts.json', 'w') as outfile:
-                json.dump(data, outfile)
-            break
-        else:
-            print(response.status_code)
-            print("trying again")
-            retry_count += 1
-            continue
-
-    if retry_count >= 5:
-        status = "SUBSTITUTE RESULTS"
-        sub_data = json.load(open('sub_data/sf-sub-evts.json'))
-        events = sub_data['events']
-
-    custom_events = compress_evt_list(events)
-    markers = [event['marker'] for event in custom_events]
-    results = {'status': status, 'events': custom_events, 'markers': markers}
-
-    return results
-
-def mock_event_search(payload):
-
-    status = "TEST" + "\n" + str(payload)
-    sub_data = json.load(open('sub_data/sf-jazz.json'))
-    events = sub_data['events']
-
-    custom_events = compress_evt_list(events)
-    markers = [event['marker'] for event in custom_events]
-    results = {'status': status, 'events': custom_events, 'markers': markers}
-
-    return results
+    return user
 
 def compress_evt_list(events):
     """Parse search results and keep only relevant event data"""
@@ -146,8 +103,8 @@ def postman_search(query):
             status = "OKAY"
             data = response.json()
             events = data['events']
-            with open('sub-evts.json', 'w') as outfile:
-                json.dump(data, outfile)
+            # with open('sub-evts.json', 'w') as outfile:
+            #     json.dump(data, outfile)
 
     else:
         status = "SUBSTITUTE RESULTS"

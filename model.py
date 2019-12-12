@@ -81,7 +81,7 @@ class UserEvent(db.Model):
 
     ue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    eventbrite_id = db.Column(db.String, db.ForeignKey('events.eventbrite_id'), unique=True)
+    eventbrite_id = db.Column(db.String, db.ForeignKey('events.eventbrite_id'))
     attendance = db.Column(db.String(5))
 
     user = db.relationship("User", backref=db.backref("user_events"))
