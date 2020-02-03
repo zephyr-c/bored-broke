@@ -31,6 +31,7 @@ def homepage():
     else:
         return render_template("landingpage.html")
 
+
 @app.route("/login", methods=["POST"])
 def process_login():
     """Log user in to their account.
@@ -61,13 +62,13 @@ def process_logout():
 
 @app.route("/register", methods=["GET"])
 def registration():
-    """show registration form"""
+    """show user registration form"""
     return render_template('registration.html')
 
 
 @app.route("/register", methods=['POST'])
 def process_registration():
-    """save new user data in system"""
+    """save new user data in database"""
     new_info = request.form
     user_info = dict(db.session.query(User.username, User.email).all())
     if (new_info['username'] in user_info.keys()
@@ -92,7 +93,7 @@ def process_registration():
 
 @app.route("/user-profile-<user_id>")
 def user_profile(user_id):
-    """show user profile/interests"""
+    """show specific user's profile"""
     user = User.query.filter(User.user_id == user_id).one()
 
     return render_template('user-profile.html', user=user)
@@ -109,7 +110,7 @@ def show_saved_events(user_id):
 
 @app.route("/event-search")
 def show_search_form():
-    """show event search"""
+    """show event search page"""
     return render_template('react-search.html')
 
 @app.route("/event-search.json")
@@ -142,7 +143,7 @@ def search_events():
 
 @app.route("/save-event", methods=["POST"])
 def save_event():
-    """Save event to user saved events list"""
+    """Save an event's details to user's saved events list in database"""
 
     eventbrite_id = request.form.get('evtID')
     print("id: " + eventbrite_id)
@@ -169,9 +170,10 @@ def save_event():
 
     return jsonify(status="success")
 
+
 @app.route("/saved-events.json", methods=["GET"])
 def check_saved():
-    """Check if user already saved event"""
+    """Check if user has already saved a given event"""
     evt_id = request.args.get('evtId')
     user = int(request.args.get('userId'))
     check_save = request.args.get('checkSave', False)
@@ -194,12 +196,13 @@ def check_saved():
 
 @app.route("/activities")
 def show_activities():
+    """Display activity generator page"""
     return render_template('activities.html')
 
 
 @app.route("/activities.json", methods=["GET"])
 def get_random_activity():
-    """Return random activity selection from database"""
+    """Return random activity selection from database as JSON"""
     suggestion = random.choice(Activity.query.all())
     activity = suggestion.activity
     print(activity)

@@ -1,4 +1,4 @@
-"""Helper Functions Will Go Here"""
+"""Helper Functions for Server App"""
 from flask import Flask, session, jsonify
 import requests
 import os
@@ -17,7 +17,7 @@ HEADERS = {'Authorization': 'Bearer ' + EVENTBRITE_TOKEN,
            'Content-Type':'application/json'}
 
 def login_success(user_id):
-    """Adds user data to flask session after successful log in/password check"""
+    """Add user data to flask session after successful log in/password check"""
     session['user'] = {}
     u_obj = User.query.filter(User.user_id == user_id).first()
     saved_events = UserEvent.query.filter_by(user_id = user_id).all()
@@ -27,12 +27,13 @@ def login_success(user_id):
     user['saved'] = [event.eventbrite_id for event in saved_events]
 
 def find_by_username(username):
+    """Search for user in database and return user data"""
     user = User.query.filter(User.username == username).first()
 
     return user
 
 def compress_evt_list(events):
-    """Parse search results and keep only relevant event data"""
+    """Parse event search results and keep only relevant event data"""
 
     custom_events = []
 
@@ -69,6 +70,7 @@ def evt_date_sort(events):
     return date_groups
 
 def postman_search(query):
+    """Search for events using Postman headers"""
     url = "https://www.eventbrite.com/api/v3/events/search/"
 
     querystring = {"price":"free","sort_by":"date","expand":"venue","include_all_series_instances":"false",
