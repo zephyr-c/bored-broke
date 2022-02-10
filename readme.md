@@ -4,6 +4,8 @@ When you need something to do but you don't have money to spend.
 
 An application to help a user find things to do without having to fork out a bunch of cash.
 
+Hackbright Capstone Project
+
 <img src="./screenshots/george-register.gif">
 
 
